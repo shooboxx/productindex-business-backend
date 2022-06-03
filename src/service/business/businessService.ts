@@ -7,7 +7,7 @@ const createBusiness = (userId : number, business : CreateBusiness) => {
         _validateBusinessExist(business)
     }
     catch (e) {
-        throw AppError(e.message, e.statusCode)
+        throw new AppError(e.message, e.statusCode)
     }
     
 }

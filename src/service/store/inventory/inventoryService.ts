@@ -6,16 +6,17 @@ import { InventoryRepo } from "./inventoryRepo"
 
 
 const getStoreInventoryItems = (storeId) : Promise<InventoryItem[]> => {
-    if (!storeId) throw new AppError(StoreErrors.storeIdIsRequired)
-    return
+    if (!storeId) throw new AppError(StoreErrors.storeIdIsRequired, 400)
+    return InventoryRepo.findStoreInventoryItems(storeId)
 }
 
 const getInventoryItem = (inventoryId) : Promise <InventoryItem> => {
-    return
+    if (!inventoryId) throw new AppError(InventoryErrors.InventoryIdRequired, 400)
+    return InventoryRepo.findInventoryItem(inventoryId)
 }
 
 const getInventoryItems = () => {
-
+    return
 }
 
 const createInventoryItems = async (inventoryItem : CreateInventoryItem[]) : Promise<InventoryItem[]> =>  {
@@ -50,6 +51,8 @@ const _validateInventoryItemCompleteness = (InventoryItem) : Boolean =>  {
 
 export const InventoryService = {
     getStoreInventoryItems,
+    getInventoryItem,
+    getInventoryItems,
     createInventoryItems,
     removeInventoryItems,
     updateInventoryItems,

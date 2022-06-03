@@ -1,4 +1,5 @@
 export const InventoryErrors = {
     InventoryItemNotFound: 'Inventory item not found',
-    StoreInventoryItemsNotFound: 'This store currently does not have any inventory items'
+    StoreInventoryItemsNotFound: 'This store currently does not have any inventory items',
+    InventoryIdRequired: 'Inventory Id is required'
 }
