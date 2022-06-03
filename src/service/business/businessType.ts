@@ -2,6 +2,7 @@ export interface CreateBusiness {
     name: string,
     description?: string,
     category: string,
+    active: boolean,
     profile_picture_url?: string,
     created_by: number,
     update_date?: number,

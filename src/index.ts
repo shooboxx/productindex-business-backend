@@ -2,15 +2,18 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
-
+const AppError = require('../utils/AppError.js')
 const helmet = require('helmet')
 const morgan = require('morgan')
 const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
 const app = express();
 const hpp = require('hpp')
+const methodOverride = require('method-override')
 
+let business = require('./service/business/businessController')
 var port = process.env.PORT || 8000;
 
 if (process.env.NODE_ENV === 'development') {
@@ -28,7 +31,11 @@ const corsConfig = {
 app.use(cors(corsConfig))
 app.use(cookieParser());
 app.use(express.json())
+app.use(methodOverride('_method'))
 app.use(helmet())
+
+
+app.use('/api',business)
 
 
 app.get('/', (req: any, res: any) => {
@@ -36,7 +43,7 @@ app.get('/', (req: any, res: any) => {
   
 })
 
-// app.all('*', (req, res, next) => next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404)))
+app.all('*', (req, res, next) => next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404)))
 
 app.use((err, req, res, next) => {
     err.statusCode = err.statusCode || 500;

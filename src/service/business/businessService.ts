@@ -1,44 +1,46 @@
 import { Business, CreateBusiness } from "./businessType"
-const AppError = require('../../../utils/AppError')
+import { BusinessRepo } from "./businessRepo"
+import AppError  from '../../../utils/AppError'
 
-const createBusiness = (userId : number, business : CreateBusiness) => {
+const createBusiness = async (business : CreateBusiness) => {
     try {
         _validateBusinessCompleteness(business)
         _validateBusinessExist(business)
+        return await BusinessRepo.addBusiness(business)
     }
-    catch (e) {
-        throw new AppError(e.message, e.statusCode)
+    catch (e : any) {
+        throw new Error(e.message)
     }
     
 }
 
-const updateBusiness = (userId : number, business : CreateBusiness) => {
-    return
-}
+// const updateBusiness = (userId : number, business : CreateBusiness) => {
+//     return
+// }
 
-const deleteBusiness = (userId : number, businessId : number) => {
-    return 
-}
+// const deleteBusiness = (userId : number, businessId : number) => {
+//     return 
+// }
 
-const getUserBusinesses = (userId : number) : Promise<Business[]> => {
-    return 
-}
+// const getUserBusinesses = (userId : number) : Promise<Business[]> => {
+//     return 
+// }
 
-const getBusinessById = (userId: number, businessId : number) : Promise<Business> =>  {
-    return
-}
+// const getBusinessById = (userId: number, businessId : number) : Promise<Business> =>  {
+//     return
+// }
 
-const setBusinessAvailabilityStatus = (userId : number, businessId : number, status: string) : Business => {
-    return
-}
+// const setBusinessAvailabilityStatus = (userId : number, businessId : number, status: string) : Business => {
+//     return
+// }
 
-const manageBusinessTags = (userId : number, businessId : number, tags : []) : Business => {
-    //Find current business tags, compare it to passed in values.. delete the ones that does not match and add thew new tags (up to 3 tags)
-    return
-}
-const getBusinesstags = (businessId : number) => {
-    return
-}
+// const manageBusinessTags = (userId : number, businessId : number, tags : []) : Business => {
+//     //Find current business tags, compare it to passed in values.. delete the ones that does not match and add thew new tags (up to 3 tags)
+//     return
+// }
+// const getBusinesstags = (businessId : number) => {
+//     return
+// }
 
 
 
@@ -56,10 +58,10 @@ const _validateBusinessExist = (business : CreateBusiness) : Boolean => {
 
 export const BusinessService = {
     createBusiness,
-    updateBusiness,
-    deleteBusiness,
-    getUserBusinesses,
-    getBusinessById,
-    setBusinessAvailabilityStatus,
-    manageBusinessTags
+    // updateBusiness,
+    // deleteBusiness,
+    // getUserBusinesses,
+    // getBusinessById,
+    // setBusinessAvailabilityStatus,
+    // manageBusinessTags
 }
