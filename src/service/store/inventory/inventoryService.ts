@@ -10,14 +10,22 @@ const getStoreInventoryItems = (storeId) : Promise<InventoryItem[]> => {
     return
 }
 
+const getInventoryItem = (inventoryId) : Promise <InventoryItem> => {
+    return
+}
+
+const getInventoryItems = () => {
+
+}
+
 const createInventoryItems = async (inventoryItem : CreateInventoryItem[]) : Promise<InventoryItem[]> =>  {
     //check if store is valid
     // check if product exist
-    
+
     const validatedInventoryItems : CreateInventoryItem[] = [] 
     const invalidItem : CreateInventoryItem[]= []
     inventoryItem.forEach((item)=> {
-        if (_validateInventoryItemCompleteness(item)) {
+        if (_validateInventoryItemCompleteness(item)) { 
             validatedInventoryItems.push(item)
         } else {
             invalidItem.push(item)
