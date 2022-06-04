@@ -7,8 +7,11 @@ const router = express.Router()
 
 router.get("/business/:businessId/products", async (req, res,) => {
     try {
-      const products = await ProductService.getBusinessProducts(req.params.businessId)
-      res.status(200).json(products)
+        const {id, key} = req.query
+        if (id) return res.status(200).json(await ProductService.getProducts(id, ''))
+        if (key) return res.status(200).json(await ProductService.getProducts(0, key))
+        const products = await ProductService.getBusinessProducts(req.params.businessId)
+        return res.status(200).json(products)
       
     }
     catch (e: any) {
@@ -16,12 +19,12 @@ router.get("/business/:businessId/products", async (req, res,) => {
     }
 });
 
-router.post("/business/:businessId/product", authenticateToken, async (req, res,) => {
+router.post("/business/:businessId/products", authenticateToken, async (req, res,) => {
     try {
       const products = req.body 
       const newProducts = await ProductService.createProducts(req.user_id, products)
       
-      res.status(200).json(newProducts)
+      return res.status(200).json(newProducts)
       
     }
     catch (e: any) {
@@ -29,12 +32,11 @@ router.post("/business/:businessId/product", authenticateToken, async (req, res,
     }
 });
 
-router.put("/business/:businessId/product", authenticateToken, async (req, res,) => {
+router.put("/business/:businessId/products", authenticateToken, async (req, res,) => {
     try {
       const products = req.body 
-      const failedProducts = await ProductService.updateProducts(req.user_id, products)
-      if (failedProducts.length > 0) return res.status(200).json(failedProducts)
-      res.status(200).json({ success: true})
+      const updatedProducts = await ProductService.updateProducts(req.user_id, products)
+      return res.status(200).json(updatedProducts)
       
     }
     catch (e: any) {

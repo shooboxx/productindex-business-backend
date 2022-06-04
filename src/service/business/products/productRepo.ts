@@ -1,21 +1,23 @@
 import db from '../../../models'
 import { Product, CreateProduct } from './productType';
+const { Op } = require("sequelize");
 
 const findBusinessProducts = async (businessId) : Promise<Product[]> => {
     return await db.Product.findAll({
         where: {
             business_id: businessId
         }
-    })
+    }).catch(e => {throw new Error(e.message)})
 
 }
 
-const findProduct = async (productId) : Promise<Product> => {
-    return await db.Product.findOne({
+const findProducts = async (productId, productKey) : Promise<Product> => {
+    return await db.Product.findAll({
         where: {
-            id: productId
+            //TODO: Add a like in here for product_key
+                [Op.or]: [{id: productId}, { product_key: productKey}]
         }
-    })
+    }).catch(e => {throw new Error(e.message)})
 
 }
 
@@ -40,13 +42,13 @@ const updateProduct = async (product : Product) : Promise<Product>=> {
             id: product.id,
             business_id: product.business_id
         }
-    })
+    }).catch(e => {throw new Error(e.message)})
     return product
 
 }
 
 export const ProductRepo = {
-    findProduct,
+    findProducts,
     findBusinessProducts,
     createProduct,
     updateProduct

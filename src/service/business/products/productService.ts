@@ -14,9 +14,8 @@ const getBusinessProducts = async (businessId : number) : Promise<Product[]> => 
     }
 }
 
-//TODO: Make function to search by product_key as well
-const getProduct = async (productId : number) : Promise<Product> => {
-    return await ProductRepo.findProduct(productId)
+const getProducts = async (productId : number, productKey : string) : Promise<Product> => {
+    return await ProductRepo.findProducts(productId, productKey)
 } 
 
 const createProducts = async (userId, products : CreateProduct[])  => {
@@ -37,7 +36,6 @@ const createProducts = async (userId, products : CreateProduct[])  => {
                 failedProducts.push(product)
             }
         })
-        console.log(storedProducts)
         return {failed: failedProducts, succeeded: storedProducts}
     }
     catch (e) {
@@ -48,6 +46,7 @@ const createProducts = async (userId, products : CreateProduct[])  => {
 const updateProducts = (userId, products : Product[])  => {
     try {
         const failedProducts : any = []
+        const updatedProducts : any = []
         if (products.length == 0) throw new AppError(ProductErrors.ProductRequired, 400)
         BusinessService.checkUserHasRightsToBusiness(userId, products[0].business_id)
 
@@ -55,6 +54,7 @@ const updateProducts = (userId, products : Product[])  => {
             const productError = _validateProductCompleteness(product)
             if (!productError) {
                 ProductRepo.updateProduct(product)
+                updatedProducts.push(product)
             } 
             if (productError) {
                 product['failed_message'] = productError
@@ -62,7 +62,7 @@ const updateProducts = (userId, products : Product[])  => {
             }
         })
         
-        return failedProducts
+        return {failed:failedProducts, succeeded: updatedProducts}
     }
     catch (e) {
         throw new AppError(e.message, e.statusCode || 400)
@@ -101,7 +101,7 @@ const _validateProductCompleteness = (product : Product) : string => {
 
 
 export const ProductService = {
-    getProduct,
+    getProducts,
     getBusinessProducts,
     createProducts,
     updateProducts,

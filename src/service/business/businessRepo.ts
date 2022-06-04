@@ -9,7 +9,7 @@ const addBusiness = async (business : CreateBusiness) : Promise<Business> => {
         active: true,
         email_address: business,
         created_by: business.created_by,
-      }).catch(() => null);
+      }).catch(e => {throw new Error(e.message)})
 
       return dataValues
 }
@@ -28,7 +28,7 @@ const updateBusiness = async (business : Business) : Promise<Business> => {
             deleted_date: null
             
         }
-    })
+    }).catch(e => {throw new Error(e.message)})
     return business
 }
 const findUserBusinesses = async (userId : number) : Promise<Business[]> => {
@@ -38,7 +38,7 @@ const findUserBusinesses = async (userId : number) : Promise<Business[]> => {
             deleted_date: null
         }
         
-    }).catch(()=> null)
+    }).catch(e => {throw new Error(e.message)})
     return businesses
 }
 
@@ -50,7 +50,7 @@ const deleteBusiness = async (businessId : number) => {
             id: businessId,
             deleted_date: null
         }
-    })
+    }).catch(e => {throw new Error(e.message)})
     return
 }
 const findBusnesssById = async (businessId : number) => {
@@ -60,7 +60,7 @@ const findBusnesssById = async (businessId : number) => {
             deleted_date: null
         }
         
-    }).catch(()=> null)
+    }).catch(e => {throw new Error(e.message)})
     return business
 }
 
