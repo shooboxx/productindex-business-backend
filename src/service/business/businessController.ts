@@ -1,8 +1,24 @@
 import express from "express";
 const router = express.Router();
 import { BusinessService } from './businessService';
-import { CreateBusiness } from './businessType';
+import { Business, CreateBusiness } from './businessType';
 
+router.get("/businesses", async (req: any, res: any) => {
+    try {
+      const businesses = await BusinessService.getUserBusinesses(req.user.id);
+      return res.status(200).json(businesses);
+    } catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+});
+router.get("/business/:businessId", async (req: any, res: any) => {
+    try {
+      const businesses = await BusinessService.getBusinessById(req.params.businessId);
+      return res.status(200).json(businesses);
+    } catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+});
 router.post("/business", async (req: any, res: any) => {
     try {
         
@@ -12,13 +28,38 @@ router.post("/business", async (req: any, res: any) => {
         profile_picture_url: req.body.profile_picture_url,
         category: req.body.business_category,
         active: true,
-        created_by: 1 //TODO: Change this to accept req.user.id,
+        created_by: req.user.id
       };
       const createdBiz = await BusinessService.createBusiness(biz).catch((e)=> {return res.status(400).json({error: e.message})});
       return res.status(200).json(createdBiz);
     } catch (e : any) {
-        return res.status(400).json({error: e.message})
+        return res.status(e.statusCode || 400).json({error: e.message})
     }
   });
+
+  router.put("/business/:businessId", async (req: any, res: any) => {
+    try {
+      const business : Business = {
+        id: req.params.businessId,
+        name: req.body.business_name,
+        description: req.body.description,
+        profile_pic_url: req.body.profile_pic_url,
+        category: req.body.category,
+      }
+      const updatedBusiness = await BusinessService.updateBusiness(req.user.id, business);
+      return res.status(200).json(updatedBusiness);
+    } catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+});
+
+  router.delete("/business/:businessId", async (req: any, res: any) => {
+    try {
+      await BusinessService.deleteBusiness(req.user.id, req.params.businessId);
+      return res.status(200).json({success: true});
+    } catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+});
 
 module.exports = router;
