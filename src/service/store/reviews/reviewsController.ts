@@ -18,7 +18,7 @@ router.put('/store/:storeId/reviews/:reviewId', async (req, res) => {
         const reviewId = req.params.reviewId
         const inappropriateReview = {
             review_id: reviewId,
-            reported_by: req.user_id,
+            reported_by: req.user.id,
             reported_reason: req.body.reported_reason,
 
         }

@@ -22,7 +22,7 @@ router.get("/business/:businessId", async (req: any, res: any) => {
 router.post("/business", async (req: any, res: any) => {
     try {
         
-      const biz = {
+      const biz : CreateBusiness= {
         name: req.body.business_name,
         description: req.body.business_description,
         profile_picture_url: req.body.profile_picture_url,
