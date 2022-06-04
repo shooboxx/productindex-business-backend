@@ -15,6 +15,7 @@ const markReviewAsInappropriate = async (userId, storeId, reviewId, flagReason) 
     if (review.store_id != storeId) throw new AppError(ReviewsErrorsMessages.ReviewNotFound, 404)
     
     review.flag_reason = `${ReviewsTriggerMessages.BUSINESS_MARKED_REVIEW_INAPPROPRIATE} ${flagReason}`
+    //TODO: Create an inappropriate table to report reviews
     // Add a flagged by column to model
     //review.flagged_by = userId
     return review

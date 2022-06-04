@@ -1,8 +1,14 @@
 export {}
 import { Review } from './reviewType';
+import db from '../../../models'
 
 const findReviewsByStoreId = async (storeId : number) : Promise<Review[]> => {
-    return
+    return await db.Review.findAll({
+        where: {
+            store_id: storeId,
+            deleted_date: null
+        }
+    })
 }
 
 const markReviewAsInappropriate = async (userId : number, reviewId : number) => {
@@ -10,7 +16,12 @@ const markReviewAsInappropriate = async (userId : number, reviewId : number) => 
 }
 
 const findReviewsById = async (reviewId : number) : Promise<Review> => {
-    return
+    return await db.Review.findAll({
+        where: {
+            id: reviewId,
+            deleted_date: null
+        }
+    })
 }
 
 export const ReviewsRepo = {

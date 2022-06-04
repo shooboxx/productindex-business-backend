@@ -44,5 +44,7 @@ router.put("/business/:businessId/products", authenticateToken, async (req, res,
     }
 });
 
+//TODO: Add a delete function
+
 
   module.exports = router;
