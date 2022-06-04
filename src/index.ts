@@ -14,6 +14,7 @@ const hpp = require('hpp')
 const methodOverride = require('method-override')
 
 let business = require('./service/business/businessController')
+let product = require('./service/business/products/productController')
 var port = process.env.PORT || 8000;
 
 if (process.env.NODE_ENV === 'development') {
@@ -36,6 +37,7 @@ app.use(helmet())
 
 
 app.use('/api',business)
+app.use('/api',product)
 
 
 app.get('/', (req: any, res: any) => {
