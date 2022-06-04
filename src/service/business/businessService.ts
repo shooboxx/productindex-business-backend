@@ -1,6 +1,6 @@
 import { Business, CreateBusiness } from "./businessType"
 import { BusinessRepo } from "./businessRepo"
-import AppError  from '../../../utils/AppError'
+import AppError from '../../../utils/AppError'
 import { BusinessErrors } from './businessConts';
 
 const createBusiness = async (business : CreateBusiness) => {
@@ -61,7 +61,7 @@ const getBusinessById = async (businessId : number) : Promise<Business> =>  {
 const setBusinessStatus = async (userId : number, businessId : number, status: boolean) : Promise<Business> => {
     try {    
         let business : Business = await getBusinessById(businessId)
-        if (!business) throw new AppError(BusinessErrors.BusinessDoesNotExist)
+        if (!business) throw new AppError(BusinessErrors.BusinessDoesNotExist, 404)
         
         business.active = status 
         return await updateBusiness(userId, business)
