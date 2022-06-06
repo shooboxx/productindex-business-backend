@@ -1,6 +1,24 @@
 import { CreateBusinessStore, BusinessStore } from "./storeTypes"
 import db from '../../models'
+const { Op } = require("sequelize");
 
+
+const findBusinessStores = async (businessId : number ) : Promise<BusinessStore[]> => {
+    return await db.BusinessStore.findAll({
+        where: {
+            business_id: businessId
+        }
+    })
+} 
+
+const findStore = async (storeId : number, storeName : string ) : Promise<BusinessStore> => {
+    return await db.BusinessStore.findOne({
+        where: {
+            //TODO: Add a like and compare by case
+            [Op.or]: [{id: storeId}, {unique_name: storeName}]
+        }
+    })
+} 
 const addStore = async (store : CreateBusinessStore) => {
     return await db.BusinessStore.create({
         business_id: store.business_id,
@@ -17,12 +35,11 @@ const addStore = async (store : CreateBusinessStore) => {
         city: store.city,
         state: store.state,
         postal_code: store.postal_code,
-        is_primary: store.is_primary,
-    })
+    }).catch(e => {throw Error(e.message)})
 }
 
 const updateStore = async (store : BusinessStore) => {
-    return await db.BusinessStore.update({
+    await db.BusinessStore.update({
         unique_name: store.unique_name,
         email: store.email,
         phone: store.phone,
@@ -37,7 +54,13 @@ const updateStore = async (store : BusinessStore) => {
         state: store.state,
         postal_code: store.postal_code,
         is_primary: store.is_primary,
-    })
+    }, {
+        where: {
+            id: store.id
+        }
+    }).catch(e => {throw Error(e.message)})
+
+    return store
 }
 
 // const deleteStore = async (storeId : number) => {
@@ -46,6 +69,8 @@ const updateStore = async (store : BusinessStore) => {
 
 
 export const StoreRepo = {
+    findBusinessStores,
+    findStore,
     addStore,
     updateStore
 }

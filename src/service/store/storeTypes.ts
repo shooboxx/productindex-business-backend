@@ -17,8 +17,8 @@ export interface BusinessStore {
     is_primary?: boolean;
     temp_or_perm_closure?: string;
     reopen_date?: string;
-    insert_date: Date;
-    update_date: Date;
+    insert_date?: Date;
+    update_date?: Date;
   }
 
 export interface CreateBusinessStore {
@@ -36,7 +36,4 @@ export interface CreateBusinessStore {
     city?: string;
     state?: string;
     postal_code?: string;
-    is_primary?: boolean;
-    temp_or_perm_closure?: string;
-    reopen_date?: string;
 }

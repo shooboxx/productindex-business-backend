@@ -5,4 +5,6 @@ export const StoreErrors = {
     cityRequired: 'city is required',
     stateRequired: 'state is required',
     countryRequired: 'country is required',
+    storeExists: 'This store already exist. Try changing the name',
+    storeNotFound: 'This store doens\'t exist.'
 }
