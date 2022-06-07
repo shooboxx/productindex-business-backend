@@ -83,7 +83,7 @@ const convertProductIntoCreateProductType = (product : Product) : CreateProduct=
 }
 
 const _validateCreateProductCompleteness = (product : CreateProduct) : string => {
-    if (!product.business_id) return 'Business id is required'
+    if (!product.business_id) return 'Business id is required' //TODO: Add this to a consts
     if (!product.product_name) return ProductErrors.ProductNameRequired
     if (!product.product_type) return ProductErrors.ProductTypeRequired
     if (product.product_key == "") return ProductErrors.ProductKeyRequired

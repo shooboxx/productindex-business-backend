@@ -16,6 +16,7 @@ const methodOverride = require('method-override')
 let business = require('./service/business/businessController')
 let product = require('./service/business/products/productController')
 let store = require('./service/store/storeController')
+let inventory = require('./service/store/inventory/inventoryController')
 var port = process.env.PORT || 8000;
 
 if (process.env.NODE_ENV === 'development') {
@@ -40,6 +41,7 @@ app.use(helmet())
 app.use('/api', business)
 app.use('/api', product)
 app.use('/api', store)
+app.use('/api', inventory)
 
 
 app.get('/', (req: any, res: any) => {

@@ -8,8 +8,8 @@ const getBusinessStores = async (businessId) : Promise<BusinessStore[]>=> {
     return await StoreRepo.findBusinessStores(businessId)
 }
 
-const getStore = async (storeId : number, storeName : string) : Promise<BusinessStore> => {
-    return await StoreRepo.findStore(storeId, storeName)
+const getStore = async (businessId : number, storeId : number, storeName : string) : Promise<BusinessStore> => {
+    return await StoreRepo.findStore(businessId, storeId, storeName)
 }
 
 const createStore = async (userId : number, store : CreateBusinessStore) : Promise<BusinessStore> => {
@@ -42,6 +42,10 @@ const deleteStore = (userId : number, storeId : number) => {
 
 } 
 
+// TODO: Implement check to see if user has rights to manage store
+const checkUserHasRightsToStore = (userId : number, storeId : number) => {
+
+}
 const _validateCreateStoreCompleteness = (store : CreateBusinessStore) => {
     if (!store.unique_name) throw new AppError(StoreErrors.uniqueNameIsRequired, 400)
     if (!store.business_id) throw new AppError(StoreErrors.businessIdRequired, 400)
@@ -50,6 +54,7 @@ const _validateCreateStoreCompleteness = (store : CreateBusinessStore) => {
     if (!store.country) throw new AppError(StoreErrors.countryRequired, 400)
 }
 
+// TODO: Implement check to see if store exist
 const _checkIfStoreExist = (store) : Boolean => {
     // getStore(0, store).then((data)=> {if (data) return true})
     return true
@@ -60,5 +65,6 @@ export const StoreService = {
     getStore,
     createStore,
     updateStore,
-    deleteStore
+    deleteStore,
+    checkUserHasRightsToStore
 }

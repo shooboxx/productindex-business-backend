@@ -8,16 +8,16 @@ const findBusinessStores = async (businessId : number ) : Promise<BusinessStore[
         where: {
             business_id: businessId
         }
-    })
+    }).catch(e => {throw new Error(e.message)})
 } 
 
-const findStore = async (storeId : number, storeName : string ) : Promise<BusinessStore> => {
+const findStore = async (businessId : number, storeId : number, storeName : string ) : Promise<BusinessStore> => {
     return await db.BusinessStore.findOne({
         where: {
             //TODO: Add a like and compare by case
-            [Op.or]: [{id: storeId}, {unique_name: storeName}]
+            [Op.or]: [{id: storeId, business_id: businessId}, {unique_name: storeName, business_id: businessId}]
         }
-    })
+    }).catch(e => {throw new Error(e.message)})
 } 
 const addStore = async (store : CreateBusinessStore) => {
     return await db.BusinessStore.create({
@@ -35,7 +35,7 @@ const addStore = async (store : CreateBusinessStore) => {
         city: store.city,
         state: store.state,
         postal_code: store.postal_code,
-    }).catch(e => {throw Error(e.message)})
+    }).catch(e => {throw new Error(e.message)})
 }
 
 const updateStore = async (store : BusinessStore) => {
@@ -58,7 +58,7 @@ const updateStore = async (store : BusinessStore) => {
         where: {
             id: store.id
         }
-    }).catch(e => {throw Error(e.message)})
+    }).catch(e => {throw new Error(e.message)})
 
     return store
 }
@@ -66,6 +66,7 @@ const updateStore = async (store : BusinessStore) => {
 // const deleteStore = async (storeId : number) => {
 //     await db.BusinessStore.delete()
 // }
+
 
 
 export const StoreRepo = {

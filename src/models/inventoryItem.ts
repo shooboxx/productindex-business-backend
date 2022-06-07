@@ -44,11 +44,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
-      business_item_id: {
+      product_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "business_item",
+          model: "product",
           key: "id",
         },
       },
@@ -61,6 +61,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      price: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },

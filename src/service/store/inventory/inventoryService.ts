@@ -3,6 +3,9 @@ const AppError = require('../../../../utils/AppError')
 import { InventoryErrors } from "./inventoryConts"
 import { StoreErrors } from "../storeConst"
 import { InventoryRepo } from "./inventoryRepo"
+import { StoreService } from '../storeService';
+import { ProductErrors } from "../../business/products/productConst"
+import { StoreRepo } from '../storeRepo';
 
 
 const getStoreInventoryItems = (storeId) : Promise<InventoryItem[]> => {
@@ -19,33 +22,76 @@ const getInventoryItems = () => {
     return
 }
 
-const createInventoryItems = async (inventoryItem : CreateInventoryItem[]) : Promise<InventoryItem[]> =>  {
-    //check if store is valid
-    // check if product exist
+const createInventoryItems = async (userId, inventoryItems : CreateInventoryItem[]) =>  {
+    try {    
+        
+        const validatedInventoryItems : any = [] 
+        const invalidItems : CreateInventoryItem[]= []
+        if (inventoryItems.length == 0 ) throw new AppError(InventoryErrors.InventoryRequired, 400)
+        StoreService.checkUserHasRightsToStore(userId, inventoryItems[0].store_id)
 
-    const validatedInventoryItems : CreateInventoryItem[] = [] 
-    const invalidItem : CreateInventoryItem[]= []
-    inventoryItem.forEach((item)=> {
-        if (_validateInventoryItemCompleteness(item)) { 
-            validatedInventoryItems.push(item)
-        } else {
-            invalidItem.push(item)
-        }
-    })
-    return await InventoryRepo.addInventoryItems(validatedInventoryItems)
+        inventoryItems.forEach((item)=> {
+            const inventoryError = _validateInventoryItemCompleteness(item)
+            if (!inventoryError) { 
+                InventoryRepo.addInventoryItem(item)
+                validatedInventoryItems.push(item)
+            } 
+            if (inventoryError) {
+                item['failed_message'] = inventoryError
+                invalidItems.push(item)
+            }
+        })
+        return {failed: invalidItems, succeeded: validatedInventoryItems}
+    } 
+    catch (e) {
+        throw new AppError(e.message, e.statusCode || 400)
+    }
 
 }
 
-const removeInventoryItems = (inventoryItemsIDs : number[]) => {
-    return
+const updateInventoryItems = async (userId : number, inventoryItems : InventoryItem[]) => {
+    try {    
+        const validatedInventoryItems : any = [] 
+        const invalidItems : CreateInventoryItem[]= []
+        if (inventoryItems.length == 0 ) throw new AppError(InventoryErrors.InventoryRequired, 400)
+        StoreService.checkUserHasRightsToStore(userId, inventoryItems[0].store_id)
+
+        inventoryItems.forEach((item)=> {
+            const inventoryError = _validateInventoryItemCompleteness(item)
+            if (!inventoryError) { 
+                InventoryRepo.updateInventoryItem(item)
+                validatedInventoryItems.push(item)
+            } 
+            if (inventoryError) {
+                item['failed_message'] = inventoryError
+                invalidItems.push(item)
+            }
+        })
+        return {failed: invalidItems, succeeded: validatedInventoryItems}}
+    
+    catch (e) {
+        throw new AppError(e.message, e.statusCode || 400)
+    }
 }
 
-const updateInventoryItems = (inventoryItems : InventoryItem[]) : Promise <InventoryItem[]> => {
-    return
+const removeInventoryItems = (userId, storeId, inventoryItemsIDs : number[]) => {
+    try {
+        StoreService.checkUserHasRightsToStore(userId, storeId)
+        inventoryItemsIDs.forEach(id => {
+            InventoryRepo.deleteInventoryItem(id)
+        })
+        return
+    }
+    catch (e) {
+        throw new AppError(e.message, e.statusCode || 400)
+    }
 }
-
-const _validateInventoryItemCompleteness = (InventoryItem) : Boolean =>  {
-    return
+const _validateInventoryItemCompleteness = (inventoryItem : CreateInventoryItem) : string =>  {
+    if (!inventoryItem.store_id) return StoreErrors.storeIdIsRequired
+    if (!inventoryItem.product_id) return ProductErrors.ProductIdRequired
+    if (!inventoryItem.currently_available) return InventoryErrors.ItemAvailabilityNeeded
+    //TODO: check if product exist
+    return ''
 }
 
 

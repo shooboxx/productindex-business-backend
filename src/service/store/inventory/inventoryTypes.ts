@@ -1,18 +1,18 @@
 export interface InventoryItem {
     id: number,
-    storeId : number,
-    productId: number,
+    store_id : number,
+    product_id: number,
     price?: number,
     quantity: number,
-    currentlyAvailable: boolean,
-    showPrice?: boolean,
+    currently_available: boolean,
+    show_price?: boolean,
 }
 
 export interface CreateInventoryItem {
-    storeId : number,
-    productId: number,
+    store_id : number,
+    product_id: number,
     price?: number,
     quantity: number,
-    currentlyAvailable: boolean,
-    showPrice?: boolean,
+    currently_available: boolean,
+    show_price?: boolean,
 }
