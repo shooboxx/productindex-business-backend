@@ -1,5 +1,6 @@
 const router = express.Router()
 import { ReviewsService } from './reviewsService';
+import { authenticateToken } from '../../auth/authorization';
 
 // Get store reviews
 router.get('/store/:storeId/reviews', async (req, res) => {
@@ -12,7 +13,7 @@ router.get('/store/:storeId/reviews', async (req, res) => {
     }
 })
 // Report a review
-router.put('/store/:storeId/reviews/:reviewId', async (req, res) => {
+router.put('/store/:storeId/reviews/:reviewId', authenticateToken, async (req, res) => {
     try {
         const storeId = req.params.storeId
         const reviewId = req.params.reviewId

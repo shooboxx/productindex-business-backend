@@ -15,7 +15,7 @@ router.get("/business/:businessId/stores", async (req, res) => {
     }
 })
 
-router.post("/business/:businessId/stores", async (req: any, res: any) => {
+router.post("/business/:businessId/stores", authenticateToken, async (req: any, res: any) => {
     try {
         const store : CreateBusinessStore = {
             business_id: req.params.businessId,
@@ -34,14 +34,14 @@ router.post("/business/:businessId/stores", async (req: any, res: any) => {
             postal_code: req.body.postal_code,
 
         }
-        const newStore = await StoreService.createStore(1, store);
+        const newStore = await StoreService.createStore(req.user_id, store);
         return res.status(200).json(newStore);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})
     }
 });
 
-router.put("/business/:businessId/store/:storeId", async (req: any, res: any) => {
+router.put("/business/:businessId/store/:storeId", authenticateToken, async (req: any, res: any) => {
     try {
         const store : BusinessStore = {
             id: req.params.storeId,
@@ -64,7 +64,7 @@ router.put("/business/:businessId/store/:storeId", async (req: any, res: any) =>
             reopen_date: req.body.reopen_date
 
         }
-        const newStore = await StoreService.updateStore(1, store);
+        const newStore = await StoreService.updateStore(req.user_id, store);
         return res.status(200).json(newStore);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})

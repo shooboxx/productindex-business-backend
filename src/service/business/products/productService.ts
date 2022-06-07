@@ -4,6 +4,7 @@ import AppError from './../../../../utils/AppError.js'
 import { ProductErrors } from "./productConst"
 import { BusinessService } from "../businessService"
 import { ProductRepo } from './productRepo';
+import { BusinessErrors } from "../businessConts";
 
 const getBusinessProducts = async (businessId : number) : Promise<Product[]> => {
     try {
@@ -83,7 +84,7 @@ const convertProductIntoCreateProductType = (product : Product) : CreateProduct=
 }
 
 const _validateCreateProductCompleteness = (product : CreateProduct) : string => {
-    if (!product.business_id) return 'Business id is required' //TODO: Add this to a consts
+    if (!product.business_id) return BusinessErrors.BusinessIdRequired
     if (!product.product_name) return ProductErrors.ProductNameRequired
     if (!product.product_type) return ProductErrors.ProductTypeRequired
     if (product.product_key == "") return ProductErrors.ProductKeyRequired
@@ -92,7 +93,7 @@ const _validateCreateProductCompleteness = (product : CreateProduct) : string =>
 
 const _validateProductCompleteness = (product : Product) : string => {
     if (!product.id) return ProductErrors.ProductIdRequired
-    if (!product.business_id) return 'Business id is required'
+    if (!product.business_id) return BusinessErrors.BusinessIdRequired
     if (!product.product_name) return ProductErrors.ProductNameRequired
     if (!product.product_type) return ProductErrors.ProductTypeRequired
     if (product.product_key == "") return ProductErrors.ProductKeyRequired
