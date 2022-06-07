@@ -59,6 +59,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      description: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      tag: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
       insert_date: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -67,6 +75,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: false,
       },
+      // deleted_date: {
+      //   type: DataTypes.DATE,
+      //   allowNull: true,
+      // }
     },
     {
       sequelize,

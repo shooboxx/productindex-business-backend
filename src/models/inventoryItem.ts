@@ -3,7 +3,7 @@ const { Model } = require("sequelize");
 
 export interface InventoryItemAttributes {
   id: number;
-  business_item_id: number;
+  product_id: number;
   business_store_id: number;
   quantity?: number;
   available: boolean;
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     implements InventoryItemAttributes
   {
     id!: number;
-    business_item_id!: number;
+    product_id!: number;
     business_store_id!: number;
     quantity?: number;
     available!: boolean;
@@ -27,12 +27,12 @@ module.exports = (sequelize, DataTypes) => {
     update_date?: Date;
 
     static associate(models) {
-      // InventoryItem.belongsTo(models.BusinessItem, {
-      //   foreignKey: "business_item_id",
-      // });
-      // InventoryItem.belongsTo(models.BusinessStore, {
-      //   foreignKey: "business_store_id",
-      // });
+      InventoryItem.belongsTo(models.Product, {
+        foreignKey: "product_id",
+      });
+      InventoryItem.belongsTo(models.BusinessStore, {
+        foreignKey: "business_store_id",
+      });
     }
   }
 

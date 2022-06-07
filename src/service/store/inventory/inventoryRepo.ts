@@ -6,7 +6,10 @@ const findStoreInventoryItems = async (storeId) : Promise<InventoryItem[]>=> {
         where: {
             business_store_id: storeId
         },
-        // include: [{model: db.Product}] //TODO: Connect inventory items to product
+        attributes: {
+            exclude: ['insert_date', 'update_date']
+        },
+        include: [{model: db.Product, attributes: {exclude: ['insert_date', 'update_date' ]}}]
         
     }).catch(e => {throw new Error(e.message)})
 }
