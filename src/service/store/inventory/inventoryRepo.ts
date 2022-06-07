@@ -9,7 +9,7 @@ const findStoreInventoryItems = async (storeId) : Promise<InventoryItem[]>=> {
         attributes: {
             exclude: ['insert_date', 'update_date']
         },
-        include: [{model: db.Product, attributes: {exclude: ['insert_date', 'update_date' ]}}]
+        include: [{model: db.Product, where: {deleted_date: null},attributes: {exclude: ['insert_date', 'update_date', 'deleted_date' ]}}]
         
     }).catch(e => {throw new Error(e.message)})
 }
@@ -18,7 +18,11 @@ const findInventoryItem = async (inventoryId : number) : Promise<InventoryItem> 
     return await db.InventoryItem.findOne({
         where: {
             id: inventoryId
-        }
+        },
+        attributes: {
+            exclude: ['insert_date', 'update_date']
+        },
+        include: [{model: db.Product, where: {deleted_date: null}, attributes: {exclude: ['insert_date', 'update_date', 'deleted_date' ]}}]
     }).catch(e => {throw new Error(e.message)})
 }
 
