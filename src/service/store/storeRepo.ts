@@ -6,7 +6,11 @@ const { Op } = require("sequelize");
 const findBusinessStores = async (businessId : number ) : Promise<BusinessStore[]> => {
     return await db.BusinessStore.findAll({
         where: {
-            business_id: businessId
+            business_id: businessId,
+            deleted_date: null
+        },
+        attributes: {
+            exclude: ['insert_date', 'update_date', 'deleted_date']
         }
     }).catch(e => {throw new Error(e.message)})
 } 
@@ -15,12 +19,15 @@ const findStore = async (businessId : number, storeId : number, storeName : stri
     return await db.BusinessStore.findOne({
         where: {
             //TODO: Add a like and compare by case
-            [Op.or]: [{id: storeId, business_id: businessId}, {unique_name: storeName, business_id: businessId}]
+            [Op.or]: [{id: storeId, business_id: businessId, deleted_date: null}, {unique_name: storeName, business_id: businessId, deleted_date: null}]
+        },
+        attributes: {
+            exclude: ['insert_date', 'update_date', 'deleted_date']
         }
     }).catch(e => {throw new Error(e.message)})
 } 
 const addStore = async (store : CreateBusinessStore) => {
-    return await db.BusinessStore.create({
+    const newStore = await db.BusinessStore.create({
         business_id: store.business_id,
         unique_name: store.unique_name,
         email: store.email,
@@ -36,6 +43,11 @@ const addStore = async (store : CreateBusinessStore) => {
         state: store.state,
         postal_code: store.postal_code,
     }).catch(e => {throw new Error(e.message)})
+    
+    newStore.update_date = undefined
+    newStore.insert_date = undefined
+    newStore.deleted_date = undefined
+    return newStore
 }
 
 const updateStore = async (store : BusinessStore) => {
@@ -63,9 +75,16 @@ const updateStore = async (store : BusinessStore) => {
     return store
 }
 
-// const deleteStore = async (storeId : number) => {
-//     await db.BusinessStore.delete()
-// }
+const deleteStore = async (storeId : number) => {
+    await db.BusinessStore.update({
+        deleted_date: new Date()
+    }, 
+    {
+        where: {
+            id: storeId
+        }
+    })
+}
 
 
 
@@ -73,5 +92,6 @@ export const StoreRepo = {
     findBusinessStores,
     findStore,
     addStore,
-    updateStore
+    updateStore,
+    deleteStore
 }

@@ -37,9 +37,14 @@ const updateStore = async (userId, store : BusinessStore) => {
         return new AppError(e.message, e.statusCode || 400)
     }
 }
-// TODO: Have to implement
-const deleteStore = (userId : number, storeId : number) => {
-
+const deleteStore = (userId : number, businessId : number, storeId : number) => {
+    try {
+        BusinessService.checkUserHasRightsToBusiness(userId, businessId) 
+        StoreRepo.deleteStore(storeId)
+    }
+    catch (e) {
+        return new AppError(e.message, e.statusCode || 400)
+    }
 } 
 
 // TODO: Implement check to see if user has rights to manage store
@@ -57,7 +62,7 @@ const _validateCreateStoreCompleteness = (store : CreateBusinessStore) => {
 // TODO: Implement check to see if store exist
 const _checkIfStoreExist = (store) : Boolean => {
     // getStore(0, store).then((data)=> {if (data) return true})
-    return true
+    return false
 }
 
 export const StoreService = {

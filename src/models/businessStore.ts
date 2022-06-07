@@ -149,7 +149,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       deleted_date: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {

@@ -71,4 +71,14 @@ router.put("/business/:businessId/store/:storeId", authenticateToken, async (req
     }
 });
 
+router.delete("/business/:businessId/store/:storeId", authenticateToken, async (req: any, res: any) => {
+    try {
+        await StoreService.deleteStore(req.user_id, req.params.businessId, req.params.storeId)
+        return res.status(200).json({success: true})
+    }
+    catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+})
+
 module.exports = router;
