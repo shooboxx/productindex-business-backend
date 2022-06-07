@@ -70,6 +70,19 @@ const updateProducts = (userId, products : Product[])  => {
     }
 }
 
+const removeProducts = async (userId, businessId, productIDs : number[]) => {
+    try {
+        BusinessService.checkUserHasRightsToBusiness(userId, businessId)
+        productIDs.forEach(id => {
+            ProductRepo.deleteProduct(id)
+        })
+        return
+    }
+    catch (e) {
+        throw new AppError(e.message, e.statusCode || 400)
+    }
+}
+
 const convertProductIntoCreateProductType = (product : Product) : CreateProduct=> {
     return {
         business_id: product.business_id || 0,
@@ -106,5 +119,6 @@ export const ProductService = {
     getBusinessProducts,
     createProducts,
     updateProducts,
+    removeProducts
     
 }

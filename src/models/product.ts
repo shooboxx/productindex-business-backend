@@ -22,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     update_date!: Date;
 
     static associate(models) {
-        // Product.hasMany(models.BusinessItem, { as: "business_items", foreignKey: "product_id"});
-        // Product.belongsTo(models.Business, { as: "business", foreignKey: "business_id"});
+        Product.hasMany(models.InventoryItem, { as: "inventory_items", foreignKey: "product_id"});
+        Product.belongsTo(models.Business, { as: "business", foreignKey: "business_id"});
     }
   }
 

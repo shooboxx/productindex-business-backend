@@ -44,7 +44,16 @@ router.put("/business/:businessId/products", authenticateToken, async (req, res,
     }
 });
 
-//TODO: Add a delete function
-
+router.delete("/business/:businessId/products", async (req, res,) => {
+    try {
+      const products = req.body 
+      await ProductService.removeProducts(1, req.params.businessId, products)
+      return res.status(200).json({success: true})
+      
+    }
+    catch (e: any) {
+        res.status(e.statusCode || 400).json({ "error": e.message })
+    }
+});
 
   module.exports = router;
