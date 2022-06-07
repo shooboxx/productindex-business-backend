@@ -4,9 +4,15 @@ export interface Review {
     store_id: number;
     rating_number: number;
     comment: string;
-    inappropriate_flag?: boolean;
-    flag_reason?: string;
+    flagged_inappropriate?: boolean;
+    flagged_reason?: string;
     deleted_date?: Date;
     insert_date?: Date;
     update_date?: Date;
+}
+
+export interface ReportedReview {
+    review_id: number;
+    reported_by: number;
+    reported_reason: string;
 }

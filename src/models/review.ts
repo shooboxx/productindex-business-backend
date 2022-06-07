@@ -7,8 +7,8 @@ export interface reviewAttributes {
   store_id: number;
   rating_number: number;
   comment: string;
-  inappropriate_flag?: boolean;
-  flag_reason?: string;
+  flagged_inappropriate?: boolean;
+  flagged_reason?: string;
   deleted_date?: Date;
   insert_date: Date;
   update_date?: Date;
@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     store_id!: number;
     rating_number!: number;
     comment!: string;
-    inappropriate_flag?: boolean;
-    flag_reason?: string;
+    flagged_inappropriate?: boolean;
+    flagged_reason?: string;
     deleted_date?: Date;
     insert_date!: Date;
     update_date?: Date;
@@ -63,11 +63,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      inappropriate_flag: {
+      flagged_inappropriate: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
       },
-      flag_reason: {
+      flagged_reason: {
         type: DataTypes.STRING(255),
         allowNull: true,
       },

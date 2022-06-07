@@ -15,15 +15,11 @@ router.get("/business/:businessId/stores", async (req, res) => {
     }
 })
 
-router.post("/business/:businessId/stores", authenticateToken, async (req: any, res: any) => {
+router.post("/business/:businessId/stores", async (req: any, res: any) => {
     try {
         const store : CreateBusinessStore = {
             business_id: req.params.businessId,
             unique_name: req.body.unique_name,
-            email: req.body.email,
-            phone: req.body.phone,
-            phone_2: req.body.phone_2,
-            phone_3: req.body.phone_3,
             address_line_1: req.body.address_line_1,
             address_line_2: req.body.address_line_2,
             latitude: req.body.latitude,
@@ -34,7 +30,7 @@ router.post("/business/:businessId/stores", authenticateToken, async (req: any, 
             postal_code: req.body.postal_code,
 
         }
-        const newStore = await StoreService.createStore(req.user_id, store);
+        const newStore = await StoreService.createStore(1, store);
         return res.status(200).json(newStore);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})

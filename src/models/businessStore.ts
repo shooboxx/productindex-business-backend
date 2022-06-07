@@ -5,10 +5,6 @@ export interface BusinessStoreAttributes {
   id: number;
   business_id: number;
   unique_name: string;
-  email?: string;
-  phone?: string;
-  phone_2?: string;
-  phone_3?: string;
   address_line_1?: string;
   address_line_2?: string;
   latitude?: number;
@@ -22,6 +18,7 @@ export interface BusinessStoreAttributes {
   reopen_date?: string;
   insert_date: Date;
   update_date: Date;
+  deleted_date: Date;
 }
 
 module.exports = (sequelize, DataTypes) => {
@@ -32,10 +29,6 @@ module.exports = (sequelize, DataTypes) => {
     id!: number;
     business_id!: number;
     unique_name!: string;
-    email?: string;
-    phone?: string;
-    phone_2?: string;
-    phone_3?: string;
     address_line_1?: string;
     address_line_2?: string;
     latitude?: number;
@@ -49,12 +42,13 @@ module.exports = (sequelize, DataTypes) => {
     reopen_date?: string;
     insert_date!: Date;
     update_date!: Date;
+    deleted_date!: Date;
     
     static associate(models) {
       // BusinessStore.belongsTo(models.Business, {foreignKey: "business_id"});
       // BusinessStore.hasMany(models.StoreHours, { foreignKey: "business_store_id"});
       // BusinessStore.hasMany(models.InventoryItem, {foreignKey: "business_store_id"});
-      // BusinessStore.hasMany(models.Review, {foreignKey: "store_id"});
+      // BusinessStore.hasMany(models.Review, {foreignKey: "store_id"}); //TODO: Add the associations back
 
     }
   }
@@ -78,22 +72,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: false,
         unique: "business_store_unique_name_key",
-      },
-      email: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      phone: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-      },
-      phone_2: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-      },
-      phone_3: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
       },
       address_line_1: {
         type: DataTypes.STRING(255),
