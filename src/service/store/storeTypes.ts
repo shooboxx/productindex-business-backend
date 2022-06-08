@@ -1,4 +1,6 @@
+import { StoreContact } from './contact/storeContactType';
 export interface BusinessStore {
+
     id: number;
     business_id: number;
     unique_name: string;
@@ -19,6 +21,7 @@ export interface BusinessStore {
     reopen_date?: string;
     insert_date?: Date;
     update_date?: Date;
+    StoreContact: StoreContact;
   }
 
 export interface CreateBusinessStore {
@@ -36,4 +39,5 @@ export interface CreateBusinessStore {
     city?: string;
     state?: string;
     postal_code?: string;
+    StoreContact: StoreContact;
 }

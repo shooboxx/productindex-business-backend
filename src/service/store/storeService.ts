@@ -3,6 +3,8 @@ import { StoreRepo  } from "./storeRepo"
 import AppError from '../../../utils/AppError.js'
 import { StoreErrors } from "./storeConst"
 import { BusinessService } from "../business/businessService"
+import { StoreContactRepo } from "./contact/storeContactRepo"
+import { StoreContactService } from './contact/storeContactService';
 
 const getBusinessStores = async (businessId) : Promise<BusinessStore[]>=> {
     return await StoreRepo.findBusinessStores(businessId)
@@ -18,7 +20,11 @@ const createStore = async (userId : number, store : CreateBusinessStore) : Promi
         _validateCreateStoreCompleteness(store)
         store.unique_name = store.unique_name.replace(/\s/g, '')
         if (_checkIfStoreExist(store)) throw new AppError(StoreErrors.storeExists, 400)
-        return await StoreRepo.addStore(store)
+        
+        let newStore : BusinessStore = await StoreRepo.addStore(store)
+        const newStoreContact = await StoreContactService.addStoreContact(newStore.id)
+        newStore['StoreContact'] = newStoreContact
+        return newStore
     }
     catch (e) {
         throw new AppError(e.message, e.statusCode || 400)
@@ -31,6 +37,7 @@ const updateStore = async (userId, store : BusinessStore) => {
         _validateCreateStoreCompleteness(store)
         store.unique_name = store.unique_name.replace(/\s/g, '')
         if (!_checkIfStoreExist(store)) throw new AppError(StoreErrors.storeNotFound, 404)
+        await StoreContactService.manageStoreContact(store.id, store.StoreContact)
         return await StoreRepo.updateStore(store)
     }
     catch (e) {

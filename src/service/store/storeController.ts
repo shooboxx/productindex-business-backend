@@ -28,9 +28,10 @@ router.post("/business/:businessId/stores", async (req: any, res: any) => {
             city: req.body.city,
             state: req.body.state,
             postal_code: req.body.postal_code,
+            StoreContact: req.body.contact
 
         }
-        const newStore = await StoreService.createStore(1, store);
+        const newStore = await StoreService.createStore(req.user_id, store);
         return res.status(200).json(newStore);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})
@@ -57,7 +58,8 @@ router.put("/business/:businessId/store/:storeId", authenticateToken, async (req
             postal_code: req.body.postal_code,
             is_primary: req.body.is_primary,
             temp_or_perm_closure: req.body.temp_or_perm_closure,
-            reopen_date: req.body.reopen_date
+            reopen_date: req.body.reopen_date,
+            StoreContact: req.params.contact
 
         }
         const newStore = await StoreService.updateStore(req.user_id, store);

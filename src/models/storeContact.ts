@@ -11,7 +11,7 @@ export interface storeContactsAttributes {
   facebook_url?: string;
   twitter_url?: string;
   instagram_url?: string;
-  business_url?: string;
+  business_website?: string;
   insert_date: Date;
   update_date: Date;
 }
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     facebook_url?: string;
     twitter_url?: string;
     instagram_url?: string;
-    business_url?: string;
+    business_website?: string;
     insert_date!: Date;
     update_date!: Date;
     
