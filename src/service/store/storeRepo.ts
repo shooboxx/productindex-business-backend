@@ -49,12 +49,9 @@ const addStore = async (store : CreateBusinessStore) => {
 }
 
 const updateStore = async (store : BusinessStore) => {
+    console.log(store)
     await db.BusinessStore.update({
         unique_name: store.unique_name,
-        // email: store.email,
-        // phone: store.phone,
-        // phone_2: store.phone_2,
-        // phone_3: store.phone_3,
         address_line_1: store.address_line_1,
         address_line_2: store.address_line_2,
         latitude: store.latitude,

@@ -9,7 +9,7 @@ export interface StoreHoursAttributes {
     tuesday_open?: string;
     tuesday_closed?: string;
     wednesday_open?: string;
-    wednedsay_closed?: string;
+    wednesday_closed?: string;
     thursday_open?: string;
     thursday_closed?: string;
     friday_open?: string;
@@ -30,7 +30,7 @@ export interface StoreHoursAttributes {
     tuesday_open?: string;
     tuesday_closed?: string;
     wednesday_open?: string;
-    wednedsay_closed?: string;
+    wednesday_closed?: string;
     thursday_open?: string;
     thursday_closed?: string;
     friday_open?: string;
@@ -82,7 +82,7 @@ export interface StoreHoursAttributes {
         type: DataTypes.TIME,
         allowNull: true
       },
-      wednedsay_closed: {
+      wednesday_closed: {
         type: DataTypes.TIME,
         allowNull: true
       },

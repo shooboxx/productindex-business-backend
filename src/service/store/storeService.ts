@@ -3,8 +3,8 @@ import { StoreRepo  } from "./storeRepo"
 import AppError from '../../../utils/AppError.js'
 import { StoreErrors } from "./storeConst"
 import { BusinessService } from "../business/businessService"
-import { StoreContactRepo } from "./contact/storeContactRepo"
 import { StoreContactService } from './contact/storeContactService';
+import {StoreHoursService} from './hours/storeHoursService'
 
 const getBusinessStores = async (businessId) : Promise<BusinessStore[]>=> {
     return await StoreRepo.findBusinessStores(businessId)
@@ -22,8 +22,10 @@ const createStore = async (userId : number, store : CreateBusinessStore) : Promi
         if (_checkIfStoreExist(store)) throw new AppError(StoreErrors.storeExists, 400)
         
         let newStore : BusinessStore = await StoreRepo.addStore(store)
+        const newStoreHours = await StoreHoursService.addStoreHours(newStore.id)
         const newStoreContact = await StoreContactService.addStoreContact(newStore.id)
         newStore['StoreContact'] = newStoreContact
+        newStore['StoreHours'] = newStoreHours
         return newStore
     }
     catch (e) {
@@ -33,11 +35,13 @@ const createStore = async (userId : number, store : CreateBusinessStore) : Promi
 }
 const updateStore = async (userId, store : BusinessStore) => {
     try{    
+        // console.log(store)
         BusinessService.checkUserHasRightsToBusiness(userId, store.business_id) 
         _validateCreateStoreCompleteness(store)
         store.unique_name = store.unique_name.replace(/\s/g, '')
         if (!_checkIfStoreExist(store)) throw new AppError(StoreErrors.storeNotFound, 404)
         await StoreContactService.manageStoreContact(store.id, store.StoreContact)
+        await StoreHoursService.manageStoreHours(store.id, store.StoreHours)
         return await StoreRepo.updateStore(store)
     }
     catch (e) {
@@ -69,7 +73,7 @@ const _validateCreateStoreCompleteness = (store : CreateBusinessStore) => {
 // TODO: Implement check to see if store exist
 const _checkIfStoreExist = (store) : Boolean => {
     // getStore(0, store).then((data)=> {if (data) return true})
-    return false
+    return true
 }
 
 export const StoreService = {

@@ -1,4 +1,5 @@
 import { StoreContact } from './contact/storeContactType';
+import { StoreHours } from './hours/storeHoursType';
 export interface BusinessStore {
 
     id: number;
@@ -22,6 +23,7 @@ export interface BusinessStore {
     insert_date?: Date;
     update_date?: Date;
     StoreContact: StoreContact;
+    StoreHours: StoreHours;
   }
 
 export interface CreateBusinessStore {
