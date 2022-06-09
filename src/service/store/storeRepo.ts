@@ -9,7 +9,7 @@ const findBusinessStores = async (businessId : number ) : Promise<BusinessStore[
             business_id: businessId,
             deleted_date: null
         },
-        include: [{model: db.StoreContacts, attributes: {exlude: ['insert_date', 'update_date', 'id']}}],
+        include: [{model: db.StoreContacts, attributes: {exclude: ['insert_date', 'update_date', 'id']}}, {model: db.StoreHours, attributes: {exclude: ['id', 'business_store_id', 'insert_date', 'update_date']}}],
         attributes: {
             exclude: ['insert_date', 'update_date', 'deleted_date']
         }
@@ -22,7 +22,7 @@ const findStore = async (businessId : number, storeId : number, storeName : stri
             //TODO: Add a like and compare by case
             [Op.or]: [{id: storeId, business_id: businessId, deleted_date: null}, {unique_name: storeName, business_id: businessId, deleted_date: null}]
         },
-        include: [{model: db.StoreContacts, attributes: {exlude: ['insert_date', 'update_date', 'id']}}],
+        include: [{model: db.StoreContacts, attributes: {exclude: ['insert_date', 'update_date', 'id']}}, {model: db.StoreHours, attributes: {exclude: ['id', 'business_store_id','insert_date', 'update_date']}}],
         attributes: {
             exclude: ['insert_date', 'update_date', 'deleted_date']
         }
@@ -49,7 +49,6 @@ const addStore = async (store : CreateBusinessStore) => {
 }
 
 const updateStore = async (store : BusinessStore) => {
-    console.log(store)
     await db.BusinessStore.update({
         unique_name: store.unique_name,
         address_line_1: store.address_line_1,
