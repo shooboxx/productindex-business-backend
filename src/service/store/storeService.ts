@@ -17,7 +17,8 @@ const getStore = async (businessId : number, storeId : number, storeName : strin
 const createStore = async (userId : number, store : CreateBusinessStore) : Promise<BusinessStore> => {
     try {   
         BusinessService.checkUserHasRightsToBusiness(userId, store.business_id) 
-        _validateCreateStoreCompleteness(store)
+        _validateStoreCompleteness(store)
+        if (!store.unique_name) throw new AppError(StoreErrors.uniqueNameIsRequired, 400)
         store.unique_name = store.unique_name.replace(/\s/g, '')
         if (_checkIfStoreExist(store)) throw new AppError(StoreErrors.storeExists, 400)
         
@@ -35,10 +36,8 @@ const createStore = async (userId : number, store : CreateBusinessStore) : Promi
 }
 const updateStore = async (userId, store : BusinessStore) => {
     try{    
-        // console.log(store)
         BusinessService.checkUserHasRightsToBusiness(userId, store.business_id) 
-        _validateCreateStoreCompleteness(store)
-        store.unique_name = store.unique_name.replace(/\s/g, '')
+        _validateStoreCompleteness(store)
         if (!_checkIfStoreExist(store)) throw new AppError(StoreErrors.storeNotFound, 404)
         await StoreContactService.manageStoreContact(store.id, store.StoreContact)
         await StoreHoursService.manageStoreHours(store.id, store.StoreHours)
@@ -58,17 +57,24 @@ const deleteStore = (userId : number, businessId : number, storeId : number) => 
     }
 } 
 
+//TODO: Implement to check if a store with this name exists already.
+const updateStoreUniqueName = async (userId, storeId, storeUniqueName) => {
+    BusinessService.checkUserHasRightsToBusiness(userId, store.business_id) 
+    storeUniqueName = storeUniqueName.replace(/\s/g, '')
+}
+
 // TODO: Implement check to see if user has rights to manage store
 const checkUserHasRightsToStore = (userId : number, storeId : number) => {
 
 }
-const _validateCreateStoreCompleteness = (store : CreateBusinessStore) => {
+const _validateStoreCompleteness = (store : CreateBusinessStore) => {
     if (!store.unique_name) throw new AppError(StoreErrors.uniqueNameIsRequired, 400)
     if (!store.business_id) throw new AppError(StoreErrors.businessIdRequired, 400)
     if (!store.city) throw new AppError(StoreErrors.cityRequired, 400)
     if (!store.state) throw new AppError(StoreErrors.stateRequired, 400)
     if (!store.country) throw new AppError(StoreErrors.countryRequired, 400)
 }
+
 
 // TODO: Implement check to see if store exist
 const _checkIfStoreExist = (store) : Boolean => {

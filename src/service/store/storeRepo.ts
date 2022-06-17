@@ -50,7 +50,6 @@ const addStore = async (store : CreateBusinessStore) => {
 
 const updateStore = async (store : BusinessStore) => {
     await db.BusinessStore.update({
-        unique_name: store.unique_name,
         address_line_1: store.address_line_1,
         address_line_2: store.address_line_2,
         latitude: store.latitude,
