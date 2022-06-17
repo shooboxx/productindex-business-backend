@@ -3,6 +3,7 @@ const router = express.Router();
 import { BusinessService } from './businessService';
 import { Business, CreateBusiness } from './businessType';
 import { authenticateToken } from '../auth/authorization';
+import { TagsService } from './tags/businessTagService';
 
 router.get("/businesses", authenticateToken, async (req: any, res: any) => {
     try {
@@ -33,6 +34,26 @@ router.post("/business", authenticateToken, async (req: any, res: any) => {
       };
       const createdBiz = await BusinessService.createBusiness(biz).catch((e)=> {return res.status(400).json({error: e.message})});
       return res.status(200).json(createdBiz);
+    } catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+});
+
+router.post("/business/:businessId/tags", authenticateToken, async (req: any, res: any) => {
+    try {
+        
+      const businessTags = await TagsService.addBusinessTags(req.user_id, req.params.businessId, req.body)
+      return res.status(200).json(businessTags);
+    } catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+});
+
+router.delete("/business/:businessId/tags/:tagId", authenticateToken, async (req: any, res: any) => {
+    try {
+        
+      const businessTags = await TagsService.deleteBusinessTag(req.user_id, req.params.businessId, req.params.tagId)
+      return res.status(200).json(businessTags);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})
     }

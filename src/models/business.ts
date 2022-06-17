@@ -35,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // Business.belongsTo(models.Users, { foreignKey: "created_by" });
-      // Business.hasMany(models.BusinessStore, { foreignKey: "business_id" });
-      // Business.hasMany(models.BusinessTags, { foreignKey: "business_id" });
-      // Business.hasMany(models.Product, {foreignKey: "business_id"});
+      Business.belongsTo(models.Users, { foreignKey: "created_by" });
+      Business.hasMany(models.BusinessStore, { foreignKey: "business_id" });
+      Business.hasMany(models.BusinessTags, { foreignKey: "business_id" });
+      Business.hasMany(models.Product, {foreignKey: "business_id"});
 
     }
   }

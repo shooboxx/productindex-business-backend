@@ -36,7 +36,8 @@ const findUserBusinesses = async (userId : number) : Promise<Business[]> => {
         where: {
             created_by: userId,
             deleted_date: null
-        }
+        },
+        include: [{model: db.BusinessTags, attributes: {exclude: ['insert_date', 'update_date', 'business_id']}}]
         
     }).catch(e => {throw new Error(e.message)})
     return businesses
@@ -58,7 +59,8 @@ const findBusnesssById = async (businessId : number) => {
         where: {
             id: businessId,
             deleted_date: null
-        }
+        },
+        include: [{model: db.BusinessTags, attributes: {exclude: ['insert_date', 'update_date', 'business_id']}}]
         
     }).catch(e => {throw new Error(e.message)})
     return business
