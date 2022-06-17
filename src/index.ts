@@ -63,6 +63,6 @@ app.use((err, req, res, next) => {
 })
 
 
-    app.listen(port, function () {
-        console.log("Running RestHub on port " + port);
-      })
+app.listen(port, function () {
+    console.log("Running RestHub on port " + port);
+    })

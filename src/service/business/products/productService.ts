@@ -83,19 +83,6 @@ const removeProducts = async (userId, businessId, productIDs : number[]) => {
     }
 }
 
-const convertProductIntoCreateProductType = (product : Product) : CreateProduct=> {
-    return {
-        business_id: product.business_id || 0,
-        product_name: product.product_name,
-        product_type: product.product_type,
-        product_image_url: product.product_image_url,
-        product_description: product.product_description,
-        product_key: product.product_key,
-        tag: product.tag
-
-    }
-}
-
 const _validateCreateProductCompleteness = (product : CreateProduct) : string => {
     if (!product.business_id) return BusinessErrors.BusinessIdRequired
     if (!product.product_name) return ProductErrors.ProductNameRequired

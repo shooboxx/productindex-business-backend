@@ -42,7 +42,6 @@ const getBusinessTags = async (businessId : number) => {
     }
 }
 
-//TODO: Implement validations for business tags
 const _validateBusinessTags = async (businessId, tag) => {
     try {
         const bizTags  = await getBusinessTags(businessId)

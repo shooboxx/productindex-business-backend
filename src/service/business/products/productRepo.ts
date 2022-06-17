@@ -27,6 +27,8 @@ const findProducts = async (productId, productKey) : Promise<Product> => {
 
 }
 
+//TODO: Find products by name and business id to disallow duplicates
+
 const createProduct = async (product : CreateProduct) : Promise<Product> => {
     return await db.Product.create({
         business_id: product.business_id,

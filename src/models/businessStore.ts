@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     deleted_date!: Date;
     
     static associate(models) {
-      // BusinessStore.belongsTo(models.Business, {foreignKey: "business_id"}); //TODO: Add the associations back
+      BusinessStore.belongsTo(models.Business, {foreignKey: "business_id"}); 
       BusinessStore.hasOne(models.StoreHours, { foreignKey: "business_store_id"});
       BusinessStore.hasOne(models.StoreContacts, { foreignKey: "business_store_id"});
       BusinessStore.hasMany(models.InventoryItem, {foreignKey: "business_store_id"}); 

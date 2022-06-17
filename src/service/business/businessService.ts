@@ -58,26 +58,6 @@ const getBusinessById = async (businessId : number) : Promise<Business> =>  {
     return await BusinessRepo.findBusnesssById(businessId)
 }
 
-const setBusinessStatus = async (userId : number, businessId : number, status: boolean) : Promise<Business> => {
-    try {    
-        let business : Business = await getBusinessById(businessId)
-        if (!business) throw new AppError(BusinessErrors.BusinessDoesNotExist, 404)
-        
-        business.active = status 
-        return await updateBusiness(userId, business)
-    } catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
-    }
-}
-
-// const manageBusinessTags = (userId : number, businessId : number, tags : []) : Business => {
-//     //Find current business tags, compare it to passed in values.. delete the ones that does not match and add thew new tags (up to 3 tags)
-//     return
-// }
-// const getBusinesstags = (businessId : number) => {
-//     return
-// }
-
 
 const checkUserHasRightsToBusiness = (userId : number, businessId : number): Boolean => {
     return true
@@ -113,6 +93,4 @@ export const BusinessService = {
     deleteBusiness,
     getUserBusinesses,
     getBusinessById,
-    // setBusinessStatus,
-    // manageBusinessTags
 }
