@@ -9,7 +9,7 @@ router.get("/business/:businessId/stores", async (req, res) => {
         const {storeId, storeName} = req.query
         if (storeId) return res.status(200).json(await StoreService.getStore(req.params.businessId, storeId, ''))
         if (storeName) return res.status(200).json(await StoreService.getStore(req.params.businessId, 0, storeName))
-        return res.status(400).json(await StoreService.getBusinessStores(req.params.businessId))
+        return res.status(200).json(await StoreService.getBusinessStores(req.params.businessId))
     } catch (e) {
         res.status(e.statusCode || 400).json({error: e.message})
     }

@@ -45,7 +45,7 @@ const findUserBusinesses = async (userId : number) : Promise<Business[]> => {
 
 const deleteBusiness = async (businessId : number) => {
     await db.Business.update({
-        deleted_date: new Date
+        deleted_date: new Date()
     }, {
         where: {
             id: businessId,

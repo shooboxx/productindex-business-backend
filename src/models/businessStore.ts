@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       BusinessStore.hasOne(models.StoreHours, { foreignKey: "business_store_id"});
       BusinessStore.hasOne(models.StoreContacts, { foreignKey: "business_store_id"});
       BusinessStore.hasMany(models.InventoryItem, {foreignKey: "business_store_id"}); 
-      BusinessStore.hasMany(models.Review, {foreignKey: "business_store_id"}); 
+      BusinessStore.hasMany(models.Review, {foreignKey: "store_id"}); 
 
     }
   }
