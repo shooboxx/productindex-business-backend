@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
-    "dev": "ts-node-dev ./src/index.ts",
+    "start": "export NODE_ENV=production || set NODE_ENV=production && ts-node ./src/index.ts",
+    "staging": "export NODE_ENV=staging || set NODE_ENV=staging && ts-node ./src/index.ts",
+    "dev": "export NODE_ENV=development || set NODE_ENV=development && ts-node-dev ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "product-index",
