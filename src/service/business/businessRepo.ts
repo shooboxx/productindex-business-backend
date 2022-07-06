@@ -14,7 +14,21 @@ const addBusiness = async (business : CreateBusiness) : Promise<Business> => {
       return dataValues
 }
 
-const updateBusiness = async (business : Business) : Promise<Business> => {
+
+const updateBusinessPicture = async (businessId: number, pictureUrl: string) : Promise<Business> => {    
+    await db.Business.update({
+        profile_picture_url: pictureUrl,
+    }, {
+        where: {
+            id: businessId,
+            deleted_date: null
+            
+        }
+    }).catch(e => {throw new Error(e.message)})
+    return business
+}
+
+const updateBusiness = async (business : Business) : Promise<Business> => {    
     await db.Business.update({
         business_name: business.name,
         description: business.description,
@@ -31,6 +45,7 @@ const updateBusiness = async (business : Business) : Promise<Business> => {
     }).catch(e => {throw new Error(e.message)})
     return business
 }
+
 const findUserBusinesses = async (userId : number) : Promise<Business[]> => {
     const businesses = await db.Business.findAll({
         where: {
@@ -72,5 +87,6 @@ export const BusinessRepo = {
     updateBusiness, 
     deleteBusiness,
     findUserBusinesses,
-    findBusnesssById
+    findBusnesssById,
+    updateBusinessPicture
 }

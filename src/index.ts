@@ -18,7 +18,8 @@ let product = require('./service/business/products/productController')
 let store = require('./service/store/storeController')
 let inventory = require('./service/store/inventory/inventoryController')
 let review = require('./service/store/reviews/reviewsController')
-var port = process.env.PORT || 8000;
+let storage = require('./service/storage/storageController')
+var port = process.env.PORT || 8080;
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
@@ -44,6 +45,7 @@ app.use('/api', product)
 app.use('/api', store)
 app.use('/api', inventory)
 app.use('/api', review)
+app.use('/api', storage)
 
 
 app.get('/', (req: any, res: any) => {
