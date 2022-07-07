@@ -2,10 +2,12 @@ import multer from "multer";
 import sharp from "sharp";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "./s3client";
-import { Business } from "../business/businessType";
 import { BusinessRepo } from "../business/businessRepo";
 import { StorageMessages } from "./storageMessages";
 import { StorageTypes } from "./storageTypes";
+import { ProductRepo } from "service/business/products/productRepo";
+import AppError from './../../../utils/AppError'
+import { PortfolioRepo } from "service/business/portfolio/businessPortfolio";
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
@@ -24,7 +26,7 @@ const upload = multer({
 export const uploadUserPhoto = upload.single("photo");
 
 const validate_storage_type = async (storage_type): Promise<boolean> => {
-  let valid = false
+  let valid = false;
   Object.values(StorageTypes).forEach((el) => {
     if (storage_type.includes(el)) {
       valid = true;
@@ -36,9 +38,7 @@ const validate_storage_type = async (storage_type): Promise<boolean> => {
 const saveImage = async (file, photoType: string, businessId: number) => {
   if (file) file.filename = `${photoType}-${businessId}-${Date.now()}.jpeg`;
   const bucket_name = "testing-pi-spaces";
-  const photo = await sharp(file.buffer)
-    .jpeg({ quality: 80 })
-    .toBuffer();
+  const photo = await sharp(file.buffer).jpeg({ quality: 80 }).toBuffer();
 
   await s3Client.send(
     new PutObjectCommand({
@@ -65,23 +65,44 @@ const saveImage = async (file, photoType: string, businessId: number) => {
   return fullUrl;
 };
 
-const saveUrl = async (file, photoType: string, businessId: number) => {
+const saveUrl = async (file, photoType: string, businessId: number, productId: number, portfolioId:number) => {
   const valid_type: boolean = await validate_storage_type(photoType);
   if (!valid_type) {
-    throw new AppError(StorageMessages.NotValidStorageType);
+    throw new AppError(StorageMessages.NotValidStorageType,400);
   }
   const url = await saveImage(file, photoType, businessId);
 
-  console.log(url)
-
   if (photoType == StorageTypes.BusinessPortfolio) {
-    //storageRepo.savePortfolioUrl(url)
+    if (portfolioId == null){
+      throw new AppError(StorageMessages.PortfolioIdRequired, 400)
+    } 
+    try {
+      return await PortfolioRepo.updatePortfolioPicture(portfolioId, url)
+    } catch (e) {
+      throw new AppError(e.message, e.statusCode || 400);
+    }
   }
+
   if (photoType == StorageTypes.BusinessProduct) {
-    //storageRepo.saveProductUrl(url)
+    if (productId == null){
+      throw new AppError(StorageMessages.ProductIdRequired, 400)
+    }
+    try {
+      return await ProductRepo.updateProductPicture(productId, url)
+    } catch (e) {
+      throw new AppError(e.message, e.statusCode || 400);
+    }
   }
+
   if (photoType == StorageTypes.BusinessProfile) {
-    //storageRepo.saveProfileUrl(url)
+    if (portfolioId == null){
+      throw new AppError(StorageMessages.PortfolioIdRequired, 400)
+    }
+    try {
+      return await BusinessRepo.updateBusinessPicture(businessId, url);
+    } catch (e) {
+      throw new AppError(e.message, e.statusCode || 400);
+    }
   }
 };
 
