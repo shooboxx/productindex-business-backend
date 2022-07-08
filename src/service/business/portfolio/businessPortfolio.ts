@@ -2,14 +2,13 @@ import db from '../../../models'
 
 const updatePortfolioPicture = async (portfolioId: number, pictureUrl: string)  => {    
     await db.BusinessPortfolio.update({
-        image_url: pictureUrl
-
+        media_url: pictureUrl
     }, {
         where: {
             id: portfolioId,
         }
     }).catch(e => {throw new Error(e.message)})
-    return product
+    return 
 }
 
 export const PortfolioRepo = {

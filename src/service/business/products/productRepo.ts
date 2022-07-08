@@ -74,7 +74,6 @@ const updateProductPicture = async (productId: number, pictureUrl: string)  => {
             id: productId,
         }
     }).catch(e => {throw new Error(e.message)})
-    return product
 }
 
 export const ProductRepo = {

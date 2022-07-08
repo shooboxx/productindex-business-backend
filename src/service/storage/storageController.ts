@@ -11,7 +11,7 @@ router.post("/storage/upload", upload.single("photo"), async (req, res) => {
     // const upload = await storageService.upload(req.file.buffer, req.file.fieldname )
     // console.log(req.file)
      try {
-      const businesses = await StorageService.saveUrl(req.file, req.body.photoType, req.body.businessId)
+      const businesses = await StorageService.saveUrl(req.file, req.body['photoType'], req.body['businessId'], req.body['productId'],req.body['portfolioId'])
       return res.status(200).json(businesses);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})

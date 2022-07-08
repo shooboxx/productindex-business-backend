@@ -15,17 +15,16 @@ const addBusiness = async (business : CreateBusiness) : Promise<Business> => {
 }
 
 
-const updateBusinessPicture = async (businessId: number, pictureUrl: string) : Promise<Business> => {    
+const updateBusinessPicture = async (businessId: number, pictureUrl: string)  => {    
     await db.Business.update({
-        profile_picture_url: pictureUrl,
+        profile_pic_url: pictureUrl,
     }, {
         where: {
             id: businessId,
             deleted_date: null
-            
         }
     }).catch(e => {throw new Error(e.message)})
-    return business
+    return 
 }
 
 const updateBusiness = async (business : Business) : Promise<Business> => {    

@@ -5,16 +5,16 @@ import { s3Client } from "./s3client";
 import { BusinessRepo } from "../business/businessRepo";
 import { StorageMessages } from "./storageMessages";
 import { StorageTypes } from "./storageTypes";
-import { ProductRepo } from "service/business/products/productRepo";
+import { ProductRepo } from "../business/products/productRepo";
 import AppError from './../../../utils/AppError'
-import { PortfolioRepo } from "service/business/portfolio/businessPortfolio";
+import { PortfolioRepo } from "../business/portfolio/businessPortfolio";
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
-    cb(new AppError("Not an image! Please upload only images.", 400), false); //TODO: Add this to a enum file
+    cb(new AppError(StorageMessages.NotAnImage,400), false); 
   }
 };
 
@@ -50,25 +50,18 @@ const saveImage = async (file, photoType: string, businessId: number) => {
     })
   );
 
-  await s3Client.send(
-    new PutObjectCommand({
-      Bucket: `${bucket_name}`,
-      Key: `${businessId}/${photoType}`,
-      Body: photo,
-      ACL: "public-read",
-      ContentType: "image/jpeg",
-    })
-  );
-
   const baseUrl = `https://${bucket_name}.nyc3.digitaloceanspaces.com`;
   const fullUrl = `${baseUrl}/${businessId}/${photoType}`;
   return fullUrl;
 };
 
-const saveUrl = async (file, photoType: string, businessId: number, productId: number, portfolioId:number) => {
+const saveUrl = async (file, photoType: string, businessId: number, productId?: number, portfolioId?:number) => {
   const valid_type: boolean = await validate_storage_type(photoType);
   if (!valid_type) {
     throw new AppError(StorageMessages.NotValidStorageType,400);
+  }
+  if (businessId == null){
+    throw new AppError(StorageMessages.PortfolioIdRequired, 400)
   }
   const url = await saveImage(file, photoType, businessId);
 
@@ -95,9 +88,6 @@ const saveUrl = async (file, photoType: string, businessId: number, productId: n
   }
 
   if (photoType == StorageTypes.BusinessProfile) {
-    if (portfolioId == null){
-      throw new AppError(StorageMessages.PortfolioIdRequired, 400)
-    }
     try {
       return await BusinessRepo.updateBusinessPicture(businessId, url);
     } catch (e) {
