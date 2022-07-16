@@ -1,6 +1,8 @@
 
 import { ProductService } from './productService';
 import { authenticateToken } from '../../auth/authorization';
+import { StorageService } from '../../storage/storageService'
+import { upload } from '../../storage/multerConfig'
 
 const express = require('express')
 const router = express.Router()
@@ -56,4 +58,14 @@ router.delete("/business/:businessId/products", async (req, res,) => {
     }
 });
 
-  module.exports = router;
+router.put("/business/:businessId/upload-portfolio", upload.single("photo"), authenticateToken, async (req: any, res: any) => {
+    try {
+        const file = req.file
+        const updatedBusiness = await StorageService.saveProductUrl(file, req.body['photoType'], req.body['productId'], req.body['businessId'])
+        return res.status(200).json(updatedBusiness);
+    } catch (e: any) {
+        return res.status(e.statusCode || 400).json({ error: e.message })
+    }
+});
+
+module.exports = router;
