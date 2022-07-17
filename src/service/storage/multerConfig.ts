@@ -3,6 +3,7 @@ require("dotenv").config();
 import multer from "multer";
 import { ImageExtensions } from "./storageConsts";
 import { StorageMessages } from "./storageMessages";
+import AppError from "./../../../utils/AppError";
 
 const multerStorage = multer.memoryStorage();
 
