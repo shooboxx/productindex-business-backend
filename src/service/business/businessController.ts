@@ -77,10 +77,10 @@ router.put("/business/:businessId", authenticateToken, async (req: any, res: any
     }
 });
 
-router.put("/business/:businessId/upload-profile",upload.single("photo") ,authenticateToken, async (req: any, res: any) => {
+router.put("/business/:businessId/profile-image",upload.single("photo"), authenticateToken, async (req: any, res: any) => {
     try {
       const file = req.file
-      const updatedBusiness = await StorageService.saveProfileUrl(file, req.body['photoType'], req.body['businessId'])
+      const updatedBusiness = await StorageService.saveProfileUrl(file, req.body['photoType'], req.params['businessId'])
       return res.status(200).json(updatedBusiness);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})

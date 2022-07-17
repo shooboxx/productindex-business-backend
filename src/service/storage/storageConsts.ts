@@ -3,7 +3,7 @@ export const StorageTypes = {
     BusinessPortfolio: 'portfolio',
     BusinessProduct: 'product'
 }
- export const ImageTypes = [
+ export const ImageExtensions = [
     "image/jpg",
     "image/png",
     "image/jpg"

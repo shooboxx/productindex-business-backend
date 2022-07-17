@@ -58,10 +58,10 @@ router.delete("/business/:businessId/products", async (req, res,) => {
     }
 });
 
-router.put("/business/:businessId/upload-portfolio", upload.single("photo"), authenticateToken, async (req: any, res: any) => {
+router.put("/business/:businessId/products/product-image", upload.single("photo"),authenticateToken, async (req: any, res: any) => {
     try {
         const file = req.file
-        const updatedBusiness = await StorageService.saveProductUrl(file, req.body['photoType'], req.body['productId'], req.body['businessId'])
+        const updatedBusiness = await StorageService.saveProductUrl(file, req.body['photoType'], req.body['productId'], req.params['businessId'])
         return res.status(200).json(updatedBusiness);
     } catch (e: any) {
         return res.status(e.statusCode || 400).json({ error: e.message })

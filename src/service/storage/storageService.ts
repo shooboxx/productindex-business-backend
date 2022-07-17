@@ -10,12 +10,8 @@ import AppError from "./../../../utils/AppError";
 import { PortfolioRepo } from "../business/portfolio/businessPortfolioRepo";
 
 
-const validate_storage_type = async (storage_type): Promise<boolean> => {
-  Object.values(StorageTypes).forEach((el) => {
-    if (storage_type.includes(el)) {
-      return true;
-    }
-  });
+const validateStorageType = async (storageType): Promise<boolean> => {
+  if (Object.values(StorageTypes).includes(storageType)) return true
   return false;
 };
 
@@ -40,34 +36,32 @@ const saveImage = async (file, photoType: string, businessId: number) => {
 };
 
 const saveUrl = async (file, photoType: string, businessId: number) => {
-  const valid_type: boolean = await validate_storage_type(photoType);
+  const valid_type: boolean = await validateStorageType(photoType);
   if (!valid_type) {
     throw new AppError(StorageMessages.NotValidStorageType, 400);
   }
   if (businessId == null) {
-    throw new AppError(StorageMessages.PortfolioIdRequired, 400);
+    throw new AppError(StorageMessages.BusinessIdRequired, 400);
   }
   const url = await saveImage(file, photoType, businessId);
   return url;
 };
 
 const saveProfileUrl = async (file, photoType, businessId) => {
-  const url = await saveUrl(file, photoType, businessId);
-  if (photoType == StorageTypes.BusinessProfile) {
-    try {
-      return await BusinessRepo.updateBusinessPicture(businessId, url);
-    } catch (e) {
-      throw new AppError(e.message, e.statusCode || 400);
-    }
+  try {
+    const url = await saveUrl(file, photoType, businessId);
+    return await BusinessRepo.updateBusinessPicture(businessId, url);
+  } catch (e) {
+    throw new AppError(e.message, e.statusCode || 400);
   }
 };
 
-const savePortofolioUrl = async (file, photoType, portfolioId, businessId) => {
-  const url = await saveUrl(file, photoType, businessId);
-  if (portfolioId == null) {
-    throw new AppError(StorageMessages.PortfolioIdRequired, 400);
-  }
+const savePortofolioUrl = async (file, photoType, portfolioId, businessId) => {  
   try {
+    if (portfolioId == null) {
+      throw new AppError(StorageMessages.PortfolioIdRequired, 400);
+    }
+    const url = await saveUrl(file, photoType, businessId);
     return await PortfolioRepo.updatePortfolioPicture(portfolioId, url);
   } catch (e) {
     throw new AppError(e.message, e.statusCode || 400);
@@ -75,11 +69,11 @@ const savePortofolioUrl = async (file, photoType, portfolioId, businessId) => {
 };
 
 const saveProductUrl = async (file, photoType, productId, businessId) => {
-  const url = await saveUrl(file, photoType, businessId);
-  if (productId == null) {
-    throw new AppError(StorageMessages.ProductIdRequired, 400);
-  }
   try {
+    if (productId == null) {
+      throw new AppError(StorageMessages.ProductIdRequired, 400);
+    }
+    const url = await saveUrl(file, photoType, businessId);
     return await ProductRepo.updateProductPicture(productId, url);
   } catch (e) {
     throw new AppError(e.message, e.statusCode || 400);
