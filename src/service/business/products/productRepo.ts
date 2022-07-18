@@ -65,10 +65,22 @@ const deleteProduct = async (productId : number) => {
     })
 }
 
+const updateProductPicture = async (productId: number, pictureUrl: string)  => {    
+    await db.Product.update({
+        image_url: pictureUrl
+
+    }, {
+        where: {
+            id: productId,
+        }
+    }).catch(e => {throw new Error(e.message)})
+}
+
 export const ProductRepo = {
     findProducts,
     findBusinessProducts,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    updateProductPicture
 }

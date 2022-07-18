@@ -4,6 +4,8 @@ import { BusinessService } from './businessService';
 import { Business, CreateBusiness } from './businessType';
 import { authenticateToken } from '../auth/authorization';
 import { TagsService } from './tags/businessTagService';
+import { StorageService } from '../storage/storageService'
+import {upload} from '../storage/multerConfig'
 
 router.get("/businesses", authenticateToken, async (req: any, res: any) => {
     try {
@@ -69,6 +71,16 @@ router.put("/business/:businessId", authenticateToken, async (req: any, res: any
         category: req.body.category,
       }
       const updatedBusiness = await BusinessService.updateBusiness(req.user_id, business);
+      return res.status(200).json(updatedBusiness);
+    } catch (e : any) {
+        return res.status(e.statusCode || 400).json({error: e.message})
+    }
+});
+
+router.put("/business/:businessId/profile-image",upload.single("photo"), authenticateToken, async (req: any, res: any) => {
+    try {
+      const file = req.file
+      const updatedBusiness = await StorageService.saveProfileUrl(file, req.body['photoType'], req.params['businessId'])
       return res.status(200).json(updatedBusiness);
     } catch (e : any) {
         return res.status(e.statusCode || 400).json({error: e.message})
