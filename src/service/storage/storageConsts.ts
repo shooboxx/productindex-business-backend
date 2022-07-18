@@ -6,5 +6,5 @@ export const StorageTypes = {
  export const ImageExtensions = [
     "image/jpg",
     "image/png",
-    "image/jpg"
+    "image/jpeg"
  ]

@@ -45,7 +45,7 @@ app.use('/api', product)
 app.use('/api', store)
 app.use('/api', inventory)
 app.use('/api', review)
-app.use('/api', portoflio)
+app.use('/api', portfolio)
 
 
 app.get('/', (req: any, res: any) => {
