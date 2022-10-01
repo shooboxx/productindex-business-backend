@@ -5,7 +5,6 @@ import { StoreErrors } from "../storeConst"
 import { InventoryRepo } from "./inventoryRepo"
 import { StoreService } from '../storeService';
 import { ProductErrors } from "../../business/products/productConst"
-import { StoreRepo } from '../storeRepo';
 
 
 const getStoreInventoryItems = (storeId) : Promise<InventoryItem[]> => {
@@ -93,7 +92,6 @@ const _validateInventoryItemCompleteness = (inventoryItem : CreateInventoryItem)
     //TODO: check if product exist
     return ''
 }
-
 
 export const InventoryService = {
     getStoreInventoryItems,

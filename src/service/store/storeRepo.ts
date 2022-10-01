@@ -48,6 +48,18 @@ const addStore = async (store : CreateBusinessStore) => {
     return newStore
 }
 
+const updateStoreUniqueName = async (storeId, uniqueName) => {
+    await db.BusinessStore.update({
+        unique_name: uniqueName
+    }, 
+    {
+        where: {
+            id: storeId,
+            deleted_date: null
+        }
+    })
+}
+
 const updateStore = async (store : BusinessStore) => {
     await db.BusinessStore.update({
         address_line_1: store.address_line_1,
@@ -86,5 +98,6 @@ export const StoreRepo = {
     findStore,
     addStore,
     updateStore,
-    deleteStore
+    deleteStore,
+    updateStoreUniqueName
 }

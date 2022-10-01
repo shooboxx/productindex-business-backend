@@ -6,6 +6,8 @@ export interface ProductAttributes {
   business_id: number;
   product_name: string;
   product_type?: string;
+  sku?: string;
+  category?: string;
   image_url?: string;
   insert_date: Date;
   update_date: Date;
@@ -17,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     business_id!: number;
     product_name!: string;
     product_type?: string;
+    sku?: string;
+    category?: string;
     image_url?: string;
     insert_date!: Date;
     update_date!: Date;
@@ -51,7 +55,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-      product_key: {
+      sku: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      category: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },

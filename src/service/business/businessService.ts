@@ -83,7 +83,7 @@ const _validateBusinessCompleteness = (business : CreateBusiness) : Boolean=> {
 }
 const _validateBusinessExist = (business : CreateBusiness) : Boolean => {
 
-    return true
+    return false
 }
 
 export const BusinessService = {

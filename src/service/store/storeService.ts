@@ -6,7 +6,7 @@ import { BusinessService } from "../business/businessService"
 import { StoreContactService } from './contact/storeContactService';
 import {StoreHoursService} from './hours/storeHoursService'
 
-const getBusinessStores = async (businessId) : Promise<BusinessStore[]>=> {
+const getBusinessStores = async (businessId) : Promise<BusinessStore[]> => {
     return await StoreRepo.findBusinessStores(businessId)
 }
 
@@ -34,6 +34,7 @@ const createStore = async (userId : number, store : CreateBusinessStore) : Promi
     }
 
 }
+
 const updateStore = async (userId, store : BusinessStore) => {
     try{    
         BusinessService.checkUserHasRightsToBusiness(userId, store.business_id) 
@@ -44,7 +45,7 @@ const updateStore = async (userId, store : BusinessStore) => {
         return await StoreRepo.updateStore(store)
     }
     catch (e) {
-        return new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode || 400)
     }
 }
 const deleteStore = (userId : number, businessId : number, storeId : number) => {
@@ -53,20 +54,36 @@ const deleteStore = (userId : number, businessId : number, storeId : number) => 
         StoreRepo.deleteStore(storeId)
     }
     catch (e) {
-        return new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode || 400)
     }
 } 
 
-//TODO: Implement to check if a store with this name exists already.
-const updateStoreUniqueName = async (userId, storeId, storeUniqueName) => {
-    BusinessService.checkUserHasRightsToBusiness(userId, store.business_id) 
-    storeUniqueName = storeUniqueName.replace(/\s/g, '')
+//TODO: Implement to check if a store with this name exists already. Start implementing repo
+const updateStoreUniqueName = async (userId, businessId, storeId, storeUniqueName) => {
+    try {    
+        BusinessService.checkUserHasRightsToBusiness(userId, businessId) 
+        const storeUniqueNameCheck = storeUniqueName.replace(/\s/g, '').toUpperCase()
+        const store = getStore(businessId, 0, storeUniqueNameCheck)
+        if (!store) {
+            throw new AppError(StoreErrors.storeNotFound, 404)
+        }
+        if (storeId != store['id']) {
+            throw new AppError(StoreErrors.storeWithUniqueNameCurrentlyExist, 400)
+        }
+
+        return StoreRepo.updateStoreUniqueName(store['id'], storeUniqueName.storeUniqueName.replace(/\s/g, ''))
+    }
+    catch (e) {
+        throw new AppError(e.message, e.statusCode || 400)
+    }
+    
 }
 
 // TODO: Implement check to see if user has rights to manage store
 const checkUserHasRightsToStore = (userId : number, storeId : number) => {
 
 }
+
 const _validateStoreCompleteness = (store : CreateBusinessStore) => {
     if (!store.unique_name) throw new AppError(StoreErrors.uniqueNameIsRequired, 400)
     if (!store.business_id) throw new AppError(StoreErrors.businessIdRequired, 400)
@@ -79,7 +96,7 @@ const _validateStoreCompleteness = (store : CreateBusinessStore) => {
 // TODO: Implement check to see if store exist
 const _checkIfStoreExist = (store) : Boolean => {
     // getStore(0, store).then((data)=> {if (data) return true})
-    return true
+    return false
 }
 
 export const StoreService = {

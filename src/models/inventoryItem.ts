@@ -6,7 +6,9 @@ export interface InventoryItemAttributes {
   product_id: number;
   business_store_id: number;
   quantity?: number;
-  available: boolean;
+  price?: number;
+  public: boolean;
+  discounted_price?: number;
   show_price: boolean;
   insert_date?: Date;
   update_date?: Date;
@@ -21,7 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     product_id!: number;
     business_store_id!: number;
     quantity?: number;
-    available!: boolean;
+    price?: number;
+    public!: boolean;
+    discounted_price?: number;
     show_price!: boolean;
     insert_date?: Date;
     update_date?: Date;
@@ -68,7 +72,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      available: {
+      discounted_price: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      public: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
       },

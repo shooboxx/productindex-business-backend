@@ -16,6 +16,8 @@ export interface BusinessStoreAttributes {
   is_primary?: boolean;
   temp_or_perm_closure?: string;
   reopen_date?: string;
+  public: boolean;
+  private_key?: string;
   insert_date: Date;
   update_date: Date;
   deleted_date: Date;
@@ -40,6 +42,8 @@ module.exports = (sequelize, DataTypes) => {
     is_primary?: boolean;
     temp_or_perm_closure?: string;
     reopen_date?: string;
+    public!: boolean;
+    private_key?: string;
     insert_date!: Date;
     update_date!: Date;
     deleted_date!: Date;
@@ -116,6 +120,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       reopen_date: {
         type: DataTypes.DATE,
+        allowNull: true,
+      },
+      public: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
+      private_key: {
+        type: DataTypes.STRING(255),
         allowNull: true,
       },
       insert_date: {

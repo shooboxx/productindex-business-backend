@@ -27,7 +27,6 @@ router.post("/business", authenticateToken, async (req: any, res: any) => {
       const biz : CreateBusiness= {
         name: req.body.business_name,
         description: req.body.business_description,
-        profile_picture_url: req.body.profile_picture_url,
         category: req.body.business_category,
         active: true,
         created_by: req.user_id
