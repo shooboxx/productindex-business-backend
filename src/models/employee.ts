@@ -63,11 +63,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       employee_verify_code: {
         type: DataTypes.STRING(100),
-        allowNull: false,
+        allowNull: true,
       },
       verified_date: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       insert_date: {
         type: DataTypes.DATE,
