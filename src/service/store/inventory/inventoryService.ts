@@ -43,7 +43,7 @@ const createInventoryItems = async (userId, inventoryItems : CreateInventoryItem
         return {failed: invalidItems, succeeded: validatedInventoryItems}
     } 
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 
 }
@@ -69,7 +69,7 @@ const updateInventoryItems = async (userId : number, inventoryItems : InventoryI
         return {failed: invalidItems, succeeded: validatedInventoryItems}}
     
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -82,7 +82,7 @@ const removeInventoryItems = (userId, storeId, inventoryItemsIDs : number[]) => 
         return
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 const _validateInventoryItemCompleteness = (inventoryItem : CreateInventoryItem) : string =>  {

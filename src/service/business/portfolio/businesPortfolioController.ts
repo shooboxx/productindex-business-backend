@@ -11,7 +11,7 @@ router.put("/business/:businessId/portfolio-image", upload.single("photo"),async
         const updatedBusiness = await StorageService.savePortofolioUrl(file, req.body['photoType'], req.body['portfolioId'], req.params['businessId'])
         return res.status(200).json(updatedBusiness);
     } catch (e: any) {
-        return res.status(e.statusCode || 400).json({ error: e.message })
+        return res.status(e.statusCode).json({ error: e.message })
     }
 });
 

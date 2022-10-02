@@ -11,7 +11,7 @@ router.get("/store/:storeId/inventory", async (req, res) => {
         return res.status(200).json(await InventoryService.getStoreInventoryItems(storeId))
 
     } catch (e) {
-        res.status(e.statusCode || 400).json({error: e.message})
+        res.status(e.statusCode).json({error: e.message})
     }
 })
 
@@ -20,7 +20,7 @@ router.post("/store/:storeId/inventory", authenticateToken, async (req, res) => 
         return res.status(200).json(await InventoryService.createInventoryItems(req.user_id, req.body))
 
     } catch (e) {
-        res.status(e.statusCode || 400).json({error: e.message})
+        res.status(e.statusCode).json({error: e.message})
     }
 })
 
@@ -29,7 +29,7 @@ router.put("/store/:storeId/inventory", authenticateToken, async (req, res) => {
         return res.status(200).json(await InventoryService.updateInventoryItems(req.user_id, req.body))
 
     } catch (e) {
-        res.status(e.statusCode || 400).json({error: e.message})
+        res.status(e.statusCode).json({error: e.message})
     }
 })
 
@@ -40,7 +40,7 @@ router.delete("/store/:storeId/inventory", authenticateToken, async (req, res) =
         return res.status(200).json({success: true})
 
     } catch (e) {
-        res.status(e.statusCode || 400).json({error: e.message})
+        res.status(e.statusCode).json({error: e.message})
     }
 })
 

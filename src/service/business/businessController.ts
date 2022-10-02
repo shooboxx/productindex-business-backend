@@ -12,7 +12,7 @@ router.get("/businesses", authenticateToken, async (req: any, res: any) => {
       const businesses = await BusinessService.getUserBusinesses(req.user_id);
       return res.status(200).json(businesses);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 router.get("/business/:businessId", async (req: any, res: any) => {
@@ -20,7 +20,7 @@ router.get("/business/:businessId", async (req: any, res: any) => {
       const businesses = await BusinessService.getBusinessById(req.params.businessId);
       return res.status(200).json(businesses);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 router.post("/business", authenticateToken, async (req: any, res: any) => {
@@ -36,7 +36,7 @@ router.post("/business", authenticateToken, async (req: any, res: any) => {
       const createdBiz = await BusinessService.createBusiness(biz).catch((e)=> {return res.status(400).json({error: e.message})});
       return res.status(200).json(createdBiz);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 
@@ -46,7 +46,7 @@ router.post("/business/:businessId/tags", authenticateToken, async (req: any, re
       const businessTags = await TagsService.addBusinessTags(req.user_id, req.params.businessId, req.body)
       return res.status(200).json(businessTags);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 
@@ -56,7 +56,7 @@ router.delete("/business/:businessId/tags/:tagId", authenticateToken, async (req
       const businessTags = await TagsService.deleteBusinessTag(req.user_id, req.params.businessId, req.params.tagId)
       return res.status(200).json(businessTags);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 
@@ -72,7 +72,7 @@ router.put("/business/:businessId", authenticateToken, async (req: any, res: any
       const updatedBusiness = await BusinessService.updateBusiness(req.user_id, business);
       return res.status(200).json(updatedBusiness);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 
@@ -82,7 +82,7 @@ router.put("/business/:businessId/profile-image",upload.single("photo"), authent
       const updatedBusiness = await StorageService.saveProfileUrl(file, req.body['photoType'], req.params['businessId'])
       return res.status(200).json(updatedBusiness);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 
@@ -91,7 +91,7 @@ router.delete("/business/:businessId", authenticateToken, async (req: any, res: 
       await BusinessService.deleteBusiness(req.user_id, req.params.businessId);
       return res.status(200).json({success: true});
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 

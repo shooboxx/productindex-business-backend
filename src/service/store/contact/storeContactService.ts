@@ -16,7 +16,7 @@ const addStoreContact = async (storeId : number) => {
         return await StoreContactRepo.createStoreContactInfo(emptyContact)
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -29,7 +29,7 @@ const manageStoreContact = async (storeId : number, contactInfo : StoreContact) 
         return await StoreContactRepo.createStoreContactInfo(contactInfo)
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -41,7 +41,7 @@ const _validateContactLinks = (contactInfo : StoreContact) => {
         if (contactInfo.business_website) urlValidator(contactInfo.business_website);
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 
 }

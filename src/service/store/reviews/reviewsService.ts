@@ -26,7 +26,7 @@ const markReviewAsInappropriate = async (storeId, reportedReview : ReportedRevie
         return await ReviewsRepo.markReviewAsInappropriate(reportedReview)
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 
 }

@@ -17,7 +17,7 @@ router.get("/business/:businessId/products", async (req, res,) => {
       
     }
     catch (e: any) {
-        res.status(e.statusCode || 400).json({ "error": e.message })
+        res.status(e.statusCode).json({ "error": e.message })
     }
 });
 
@@ -30,7 +30,7 @@ router.post("/business/:businessId/products", authenticateToken, async (req, res
       
     }
     catch (e: any) {
-        res.status(e.statusCode || 400).json({ "error": e.message })
+        res.status(e.statusCode).json({ "error": e.message })
     }
 });
 
@@ -42,7 +42,7 @@ router.put("/business/:businessId/products", authenticateToken, async (req, res,
       
     }
     catch (e: any) {
-        res.status(e.statusCode || 400).json({ "error": e.message })
+        res.status(e.statusCode).json({ "error": e.message })
     }
 });
 
@@ -54,7 +54,7 @@ router.delete("/business/:businessId/products", async (req, res,) => {
       
     }
     catch (e: any) {
-        res.status(e.statusCode || 400).json({ "error": e.message })
+        res.status(e.statusCode).json({ "error": e.message })
     }
 });
 
@@ -64,7 +64,7 @@ router.put("/business/:businessId/products/product-image", upload.single("photo"
         const updatedBusiness = await StorageService.saveProductUrl(file, req.body['photoType'], req.body['productId'], req.params['businessId'])
         return res.status(200).json(updatedBusiness);
     } catch (e: any) {
-        return res.status(e.statusCode || 400).json({ error: e.message })
+        return res.status(e.statusCode).json({ error: e.message })
     }
 });
 

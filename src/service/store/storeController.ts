@@ -11,7 +11,7 @@ router.get("/business/:businessId/stores", async (req, res) => {
         if (storeName) return res.status(200).json(await StoreService.getStore(req.params.businessId, 0, storeName))
         return res.status(200).json(await StoreService.getBusinessStores(req.params.businessId))
     } catch (e) {
-        res.status(e.statusCode || 400).json({error: e.message})
+        res.status(e.statusCode).json({error: e.message})
     }
 })
 
@@ -34,7 +34,7 @@ router.post("/business/:businessId/stores", authenticateToken, async (req: any, 
         const newStore = await StoreService.createStore(req.user_id, store);
         return res.status(200).json(newStore);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 
@@ -62,7 +62,7 @@ router.put("/business/:businessId/store/:storeId", authenticateToken, async (req
         const newStore = await StoreService.updateStore(req.user_id, store);
         return res.status(200).json(newStore);
     } catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 });
 
@@ -72,7 +72,7 @@ router.delete("/business/:businessId/store/:storeId", authenticateToken, async (
         return res.status(200).json({success: true})
     }
     catch (e : any) {
-        return res.status(e.statusCode || 400).json({error: e.message})
+        return res.status(e.statusCode).json({error: e.message})
     }
 })
 

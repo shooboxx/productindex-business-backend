@@ -18,7 +18,7 @@ const addBusinessTags = async (userId, businessId, tags) => {
         return {success: successfulTags, failed: failedTags}
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -28,7 +28,7 @@ const deleteBusinessTag = async (userId, businessId, tagId) => {
         return await TagsRepo.deleteBusinessTag(businessId, tagId)
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
     
 }

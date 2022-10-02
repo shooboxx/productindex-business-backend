@@ -11,7 +11,7 @@ const getBusinessProducts = async (businessId : number) : Promise<Product[]> => 
         return await ProductRepo.findBusinessProducts(businessId)
     }
     catch (e) {
-        throw AppError(e.message, e.statusCode || 400)
+        throw AppError(e.message, e.statusCode)
     }
 }
 
@@ -40,7 +40,7 @@ const createProducts = async (userId, products : CreateProduct[])  => {
         return {failed: failedProducts, succeeded: storedProducts}
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -66,7 +66,7 @@ const updateProducts = (userId, products : Product[])  => {
         return {failed:failedProducts, succeeded: updatedProducts}
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -79,7 +79,7 @@ const removeProducts = async (userId, businessId, productIDs : number[]) => {
         return
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 

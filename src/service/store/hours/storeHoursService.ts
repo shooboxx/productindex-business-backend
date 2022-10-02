@@ -25,7 +25,7 @@ const addStoreHours = async (storeId : number) => {
 
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -53,7 +53,7 @@ const manageStoreHours = async (storeId, storeHours) => {
 
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 

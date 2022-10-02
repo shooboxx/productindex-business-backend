@@ -11,7 +11,7 @@ const createBusiness = async (business : CreateBusiness) => {
         return await BusinessRepo.addBusiness(business)
     }
     catch (e : any) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
     
 }
@@ -29,7 +29,7 @@ const updateBusiness = async (userId : number, business : Business) : Promise<Bu
         return await BusinessRepo.updateBusiness(business)
     }
     catch (e : any) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
     
     
@@ -41,7 +41,7 @@ const deleteBusiness = async (userId : number, businessId : number) => {
         return await BusinessRepo.deleteBusiness(businessId)
     }
     catch (e : any) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 
@@ -50,7 +50,7 @@ const getUserBusinesses = async (userId : number) : Promise<Business[]> => {
         return await BusinessRepo.findUserBusinesses(userId)
     } 
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 

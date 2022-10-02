@@ -30,7 +30,7 @@ const createStore = async (userId : number, store : CreateBusinessStore) : Promi
         return newStore
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 
 }
@@ -45,7 +45,7 @@ const updateStore = async (userId, store : BusinessStore) => {
         return await StoreRepo.updateStore(store)
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 }
 const deleteStore = (userId : number, businessId : number, storeId : number) => {
@@ -54,7 +54,7 @@ const deleteStore = (userId : number, businessId : number, storeId : number) => 
         StoreRepo.deleteStore(storeId)
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
 } 
 
@@ -74,7 +74,7 @@ const updateStoreUniqueName = async (userId, businessId, storeId, storeUniqueNam
         return StoreRepo.updateStoreUniqueName(store['id'], storeUniqueName.storeUniqueName.replace(/\s/g, ''))
     }
     catch (e) {
-        throw new AppError(e.message, e.statusCode || 400)
+        throw new AppError(e.message, e.statusCode)
     }
     
 }

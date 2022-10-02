@@ -52,7 +52,7 @@ const saveProfileUrl = async (file, photoType, businessId) => {
     const url = await saveUrl(file, photoType, businessId);
     return await BusinessRepo.updateBusinessPicture(businessId, url);
   } catch (e) {
-    throw new AppError(e.message, e.statusCode || 400);
+    throw new AppError(e.message, e.statusCode);
   }
 };
 
@@ -64,7 +64,7 @@ const savePortofolioUrl = async (file, photoType, portfolioId, businessId) => {
     const url = await saveUrl(file, photoType, businessId);
     return await PortfolioRepo.updatePortfolioPicture(portfolioId, url);
   } catch (e) {
-    throw new AppError(e.message, e.statusCode || 400);
+    throw new AppError(e.message, e.statusCode);
   }
 };
 
@@ -76,7 +76,7 @@ const saveProductUrl = async (file, photoType, productId, businessId) => {
     const url = await saveUrl(file, photoType, businessId);
     return await ProductRepo.updateProductPicture(productId, url);
   } catch (e) {
-    throw new AppError(e.message, e.statusCode || 400);
+    throw new AppError(e.message, e.statusCode);
   }
 };
 
