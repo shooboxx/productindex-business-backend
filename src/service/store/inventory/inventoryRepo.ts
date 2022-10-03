@@ -1,8 +1,8 @@
 import { CreateInventoryItem, InventoryItem } from "./inventoryTypes";
 import db from '../../../models'
 
-const findStoreInventoryItems = async (storeId) : Promise<InventoryItem[]>=> {
-    return await db.InventoryItem.findAll({
+const findStoreInventoryItems = async (storeId, page, pageSize) : Promise<InventoryItem[]>=> {
+    let clause = {
         where: {
             business_store_id: storeId
         },
@@ -11,7 +11,12 @@ const findStoreInventoryItems = async (storeId) : Promise<InventoryItem[]>=> {
         },
         include: [{model: db.Product, where: {deleted_date: null},attributes: {exclude: ['insert_date', 'update_date', 'deleted_date' ]}}]
         
-    }).catch(e => {throw new Error(e.message)})
+    }
+    if (page >= 0 && pageSize)  {
+        clause['limit'] = pageSize 
+        clause['offset'] = page * pageSize
+    }
+    return await db.InventoryItem.findAndCountAll(clause).catch(e => {throw new Error(e.message)})
 }
 
 const findInventoryItem = async (inventoryId : number) : Promise<InventoryItem> => {

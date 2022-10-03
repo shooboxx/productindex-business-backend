@@ -7,9 +7,9 @@ import { StoreService } from '../storeService';
 import { ProductErrors } from "../../business/products/productConst"
 
 
-const getStoreInventoryItems = (storeId) : Promise<InventoryItem[]> => {
+const getStoreInventoryItems = (storeId : number, page : number, pageSize : number) : Promise<InventoryItem[]> => {
     if (!storeId) throw new AppError(StoreErrors.storeIdIsRequired, 400)
-    return InventoryRepo.findStoreInventoryItems(storeId)
+    return InventoryRepo.findStoreInventoryItems(storeId, page, pageSize)
 }
 
 const getInventoryItem = (inventoryId) : Promise <InventoryItem> => {

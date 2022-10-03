@@ -2,15 +2,21 @@ import db from '../../../models'
 import { Product, CreateProduct } from './productType';
 const { Op } = require("sequelize");
 
-const findBusinessProducts = async (businessId) : Promise<Product[]> => {
-    return await db.Product.findAll({
+const findBusinessProducts = async (businessId : number, page: number, pageSize: number) : Promise<Product[]> => {
+    let clause = {
         where: {
             business_id: businessId
         }, 
         attributes: {
             exclude: ['deleted_date', 'insert_date', 'update_date']
         }
-    }).catch(e => {throw new Error(e.message)})
+    }
+    if (page >= 0 && pageSize)  {
+        clause['limit'] = pageSize 
+        clause['offset'] = page * pageSize
+    }
+
+    return await db.Product.findAndCountAll(clause).catch(e => {throw new Error(e.message)})
 
 }
 

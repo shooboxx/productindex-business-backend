@@ -6,9 +6,10 @@ import { BusinessService } from "../businessService"
 import { ProductRepo } from './productRepo';
 import { BusinessErrors } from "../businessConts";
 
-const getBusinessProducts = async (businessId : number) : Promise<Product[]> => {
+const getBusinessProducts = async (businessId : number, page : number, pageSize : number) : Promise<Product[]> => {
     try {
-        return await ProductRepo.findBusinessProducts(businessId)
+        console.log('Page ', page, 'Page size: ', pageSize)
+        return await ProductRepo.findBusinessProducts(businessId, page, pageSize)
     }
     catch (e) {
         throw AppError(e.message, e.statusCode)

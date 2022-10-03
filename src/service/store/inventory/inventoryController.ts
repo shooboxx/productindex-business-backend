@@ -8,7 +8,7 @@ import { InventoryService } from './inventoryService';
 router.get("/store/:storeId/inventory", async (req, res) => {
     try {
         const storeId = req.params.storeId
-        return res.status(200).json(await InventoryService.getStoreInventoryItems(storeId))
+        return res.status(200).json(await InventoryService.getStoreInventoryItems(storeId, req.query.page, req.query.pageSize))
 
     } catch (e) {
         res.status(e.statusCode).json({error: e.message})
