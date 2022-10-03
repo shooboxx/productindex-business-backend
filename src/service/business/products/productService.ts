@@ -8,7 +8,6 @@ import { BusinessErrors } from "../businessConts";
 
 const getBusinessProducts = async (businessId : number, page : number, pageSize : number) : Promise<Product[]> => {
     try {
-        console.log('Page ', page, 'Page size: ', pageSize)
         return await ProductRepo.findBusinessProducts(businessId, page, pageSize)
     }
     catch (e) {
