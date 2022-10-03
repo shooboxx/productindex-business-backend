@@ -3,7 +3,7 @@ import { UserErrors } from '../user/userConst';
 import AppError from './../../../utils/AppError.js'
 import {AccessLevel} from './enums/employeeAccessLevelEnum'
 import { EmployeeRepo } from './employeeRepo';
-import { EmployeeSearch } from './employeeType';
+import { EmployeeSearch, Employee } from './employeeType';
 import {EmployeeErrors} from './employeeConst'
 
 //Implemented and tested
@@ -25,16 +25,16 @@ const createEmployee = async (businessId : number, userId : number, accessLevel 
         throw new AppError(e.message, e.statusCode)
     }
 }
-
+//Implemented and tested
 const updateEmployeeAccessLevel = async (employeeId : number, accessLevel : AccessLevel) => {
-    if (!employeeId) return
-    if (!accessLevel) return
-    return
+    if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
+    if (!accessLevel) throw new AppError(EmployeeErrors.AccessLevelRequired, 400)
+    return EmployeeRepo.updateEmployeeAccessLevel(employeeId, accessLevel)
 }
 //Implemented and tested
 const deleteEmployee = async (employeeId : number) => {
     try {
-        if (!employeeId) return
+        if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
         return EmployeeRepo.deleteEmployee(employeeId)
     }
     catch (e) {
@@ -43,7 +43,7 @@ const deleteEmployee = async (employeeId : number) => {
 
 }
 //Implemented and tested
-const getBusinessEmployees = async (businessId : number, userInfo : EmployeeSearch) => {
+const getBusinessEmployees = async (businessId : number, userInfo : EmployeeSearch)  => {
     try {
         if (!businessId) throw new AppError(BusinessErrors.BusinessIdRequired, 400)
         return await EmployeeRepo.findBusinessEmployees(businessId, userInfo)
@@ -56,7 +56,7 @@ const getBusinessEmployees = async (businessId : number, userInfo : EmployeeSear
 //Implemented and tested
 const _doesEmployeeExist = async (businessId : number, userId : number) => {
     try {
-        const employee =  await EmployeeRepo.findEmployeeExist(businessId, userId)
+        const employee =  await EmployeeRepo._findEmployeeExist(businessId, userId)
         if (employee) return true
         return false
     }
@@ -64,21 +64,35 @@ const _doesEmployeeExist = async (businessId : number, userId : number) => {
         throw new AppError(e.message, e.statusCode)
     }
 }
-
-const getUserByEmployeeVerificationCode = async (verificiationCode : string) => {
-    if (!verificiationCode) return null
-
+//Implemented and tested
+const verifyEmployee = async (verificationCode : string) => {
+    const employee : Employee = await _getUserByEmployeeVerificationCode(verificationCode)
+    if (employee) {
+        employee.employee_verify_code = ''
+        employee.verified_date = new Date()
+        return await _updateEmployee(employee)        
+    }
+    throw new AppError(EmployeeErrors.InvalidVerificationCode, 400)
+}
+//Implemented and tested
+const _getUserByEmployeeVerificationCode = async (verificiationCode : string) : Promise<Employee>=> {
+    if (!verificiationCode) throw new AppError(EmployeeErrors.VerificationCodeRequired, 400)
+    try {
+        return EmployeeRepo.findEmployeeByVerificationCode(verificiationCode)
+    }
+    catch (e) {
+        throw new AppError(e.message, e.statusCode)
+    }
+}
+//Implemented and tested
+const _updateEmployee = async (employee : Employee) => {
+    return await EmployeeRepo._updateEmployee(employee)
 }
 
-const verifyEmployee = async (employeeId : number) => {
-    if (!employeeId) return
-    //Update employee verification date to current date and remove verification code
-
-}
-
-export const EmloyeeService = { 
+export const EmployeeService = { 
     createEmployee,
     updateEmployeeAccessLevel,
     deleteEmployee,
     getBusinessEmployees,
+    verifyEmployee
 }
