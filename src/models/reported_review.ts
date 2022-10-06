@@ -31,11 +31,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       reported_by: {
         type: DataTypes.STRING(255),
-        allowNull: true,
+        allowNull: false,
+        references: {
+          model: "users",
+          key: "id",
+        },
       },
       reported_reason: {
         type: DataTypes.STRING(255),
-        allowNull: true,
+        allowNull: false,
       },
       insert_date: {
         type: DataTypes.DATE,
