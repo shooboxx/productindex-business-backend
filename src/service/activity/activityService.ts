@@ -10,7 +10,7 @@ const logActivity = async (userId : number, businessId : number, activity : stri
 
 const getBusinessActivities = async (businessId: number) => {
     const activities = await ActivityRepo.findBusinessActivity(businessId)
-    return activities.map(activity => `${activity['first_name']} ${activity['last_name']} ${activity['activity']}` )
+    return activities.map(activity => `${activity['User']['first_name']} ${activity['User']['last_name']} ${activity['activity'].charAt(0).toLowerCase() + activity['activity'].slice(1)}` )
 }
 
 const _generateActivityString = (previousValue : string, currentValue : string, activity : string) => {
