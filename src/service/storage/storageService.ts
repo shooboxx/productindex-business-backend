@@ -56,7 +56,7 @@ const saveProfileUrl = async (file, photoType, businessId) => {
   }
 };
 
-const savePortofolioUrl = async (file, photoType, portfolioId, businessId) => {  
+const savePortfolioUrl = async (file, photoType, portfolioId, businessId) => {  
   try {
     if (portfolioId == null) {
       throw new AppError(StorageMessages.PortfolioIdRequired, 400);
@@ -82,7 +82,7 @@ const saveProductUrl = async (file, photoType, productId, businessId) => {
 
 export const StorageService = {
   saveImage,
-  savePortofolioUrl,
+  savePortfolioUrl,
   saveProductUrl,
   saveProfileUrl
 };
