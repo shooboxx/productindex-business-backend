@@ -8,15 +8,24 @@ const logActivity = (userId: number, businessId: number, activity: string) => {
     })
 }
 
-const findBusinessActivity = (businessId: number) => {
-    return db.BusinessActivity.findAll({
+const findBusinessActivity = (businessId: number, page: number = 0, pageSize: number = 0) => {
+    console.log('Business Id', businessId)
+    let clause = {
         where: {
             business_id: businessId
         }, 
         attributes: {
-            exclude: ['update_date'],
-        },
-        include: [{model: db.Users, where: {deleted_date: null}, attributes:  ["first_name", "last_name"]}]
+            exclude: ['update_date']
+        }
+    }
+    if (page >= 0 && pageSize)  {
+        clause['limit'] = pageSize 
+        clause['offset'] = page * pageSize
+    }
+    return db.BusinessActivity.findAndCountAll({
+        clause,
+        include: [{model: db.Users, where: {deleted_date: null}, attributes:  ["first_name", "last_name"]}],
+        order: [['insert_date', 'DESC']]
     })
 }
 
