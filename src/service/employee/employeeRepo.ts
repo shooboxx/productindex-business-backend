@@ -7,7 +7,16 @@ const _findEmployeeExist = (businessId : number, userId : number) => {
     return db.Employee.findOne({
         where: {
             user_id: userId,
-            business_id: businessId
+            business_id: businessId,
+            deleted_date: null
+        }
+    })
+}
+const _findEmployeeById = (employeeId : number) => {
+    return db.Employee.findOne({
+        where: {
+            id: employeeId,
+            deleted_date: null
         }
     })
 }
@@ -91,6 +100,7 @@ export const EmployeeRepo = {
     createEmployee,
     deleteEmployee,
     updateEmployeeAccessLevel,
-    _updateEmployee
+    _updateEmployee,
+    _findEmployeeById
     
 }

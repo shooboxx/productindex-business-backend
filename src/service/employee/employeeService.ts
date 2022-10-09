@@ -89,10 +89,15 @@ const _updateEmployee = async (employee : Employee) => {
     return await EmployeeRepo._updateEmployee(employee)
 }
 
+const _findEmployeeById = async (employeeId : number) => {
+    if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
+    return await EmployeeRepo._findEmployeeById(employeeId)
+}
 export const EmployeeService = { 
     createEmployee,
     updateEmployeeAccessLevel,
     deleteEmployee,
     getBusinessEmployees,
-    verifyEmployee
+    verifyEmployee,
+    _findEmployeeById
 }
