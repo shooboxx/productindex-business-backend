@@ -2,7 +2,17 @@ import { CreateBusinessStore, BusinessStore } from "./storeTypes"
 import db from '../../models'
 const { Op } = require("sequelize");
 
-
+const _findStoreById = async (storeId: number) : Promise<BusinessStore> => {
+    return await db.BusinessStore.findOne({
+        where: {
+            id: storeId,  deleted_date: null
+        },
+        include: [{model: db.StoreContacts, attributes: {exclude: ['insert_date', 'update_date', 'id']}}, {model: db.StoreHours, attributes: {exclude: ['id', 'business_store_id','insert_date', 'update_date']}}],
+        attributes: {
+            exclude: ['insert_date', 'update_date', 'deleted_date']
+        }
+    }).catch(e => {throw new Error(e.message)})
+}
 const findBusinessStores = async (businessId : number ) : Promise<BusinessStore[]> => {
     return await db.BusinessStore.findAll({
         where: {
@@ -94,6 +104,7 @@ const deleteStore = async (storeId : number) => {
 
 
 export const StoreRepo = {
+    _findStoreById,
     findBusinessStores,
     findStore,
     addStore,

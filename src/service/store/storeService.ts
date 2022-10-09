@@ -14,6 +14,11 @@ const getStore = async (businessId : number, storeId : number, storeName : strin
     return await StoreRepo.findStore(businessId, storeId, storeName)
 }
 
+const _getStoreById = async (storeId : number) : Promise<BusinessStore> => {
+    if (!storeId) throw new AppError(StoreErrors.storeIdIsRequired, 400)
+    return await StoreRepo._findStoreById(storeId)
+}
+
 const createStore = async (userId : number, store : CreateBusinessStore) : Promise<BusinessStore> => {
     try {   
         BusinessService.checkUserHasRightsToBusiness(userId, store.business_id) 
@@ -101,6 +106,7 @@ const _checkIfStoreExist = (store) : Boolean => {
 
 export const StoreService = {
     getBusinessStores,
+    _getStoreById,
     getStore,
     createStore,
     updateStore,
