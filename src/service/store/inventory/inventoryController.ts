@@ -1,8 +1,6 @@
 import express from "express";
 const router = express.Router();
-// import { StoreService } from "./storeService";
 import { authenticateToken } from '../../auth/authorization';
-// import { CreateBusinessStore, BusinessStore } from './storeTypes';
 import { InventoryService } from './inventoryService';
 
 router.get("/store/:storeId/inventory", async (req, res) => {
