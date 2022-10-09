@@ -20,6 +20,8 @@ let inventory = require('./service/store/inventory/inventoryController')
 let review = require('./service/store/reviews/reviewsController')
 let portfolio  = require('./service/business/portfolio/businesPortfolioController')
 let employee  = require('./service/employee/employeeController')
+let employeeAssignment  = require('./service/store/employeeAssignment/employmentAssignmentController')
+
 var port = process.env.PORT || 8080;
 
 if (process.env.NODE_ENV === 'development') {
@@ -48,6 +50,7 @@ app.use('/api', inventory)
 app.use('/api', review)
 app.use('/api', portfolio)
 app.use('/api', employee)
+app.use('/api', employeeAssignment)
 
 
 app.get('/', (req: any, res: any) => {
