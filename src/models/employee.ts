@@ -7,7 +7,7 @@ export interface EmployeeAttributes {
   user_id : number;
   business_access_level_id: number;
   employee_verified_code?: string;
-  verified_dat?: Date;
+  verified_date?: Date;
   insert_date: Date;
   update_date: Date;
   deleted_date: Date;
