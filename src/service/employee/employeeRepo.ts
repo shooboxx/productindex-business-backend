@@ -3,7 +3,7 @@ import { EmployeeSearch } from './employeeType';
 import { AccessLevel } from './enums/employeeAccessLevelEnum';
 const { Op } = require("sequelize");
 
-const _findEmployeeExist = (businessId : number, userId : number) => {
+const findUserEmployeeInfo = (businessId : number, userId : number) => {
     return db.Employee.findOne({
         where: {
             user_id: userId,
@@ -94,7 +94,7 @@ const _updateEmployee = (employee) => {
 }
 
 export const EmployeeRepo = {
-    _findEmployeeExist,
+    findUserEmployeeInfo,
     findBusinessEmployees,
     findEmployeeByVerificationCode,
     createEmployee,

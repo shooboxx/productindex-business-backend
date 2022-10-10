@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 import  AppError  from './../../../utils/AppError'
 import { AuthErrors } from './authConsts';
+import { EmployeeService } from '../employee/employeeService';
+import { AccessLevel } from '../employee/enums/employeeAccessLevelEnum';
 
 export function authenticateToken (req, res, next) {
     const token = req.cookies.access_token
@@ -11,3 +13,19 @@ export function authenticateToken (req, res, next) {
         return next()
     })
 }
+
+export function hasRole (role : AccessLevel[] = []) {
+    const allowedRoles = [AccessLevel.Owner, AccessLevel.Administrator, ...role]
+    return async (req, res, next) => {
+        const businessId = req.params.businessId
+        const userId = req.user_id
+        EmployeeService.getUserEmployeeInfo(userId, businessId)
+            .then(data=> {
+                if (!allowedRoles.includes(data.business_access_level)) throw new AppError('You do not have sufficient permission', 400)
+                return next()
+            }).catch(e => {
+                res.status(e.statusCode).json({error: e.message})
+            })
+    }
+}
+

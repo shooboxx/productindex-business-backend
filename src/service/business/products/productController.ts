@@ -1,6 +1,6 @@
 
 import { ProductService } from './productService';
-import { authenticateToken } from '../../auth/authorization';
+import { authenticateToken, hasRole } from '../../auth/authorization';
 import { StorageService } from '../../storage/storageService'
 import { upload } from '../../storage/multerConfig'
 
@@ -21,7 +21,7 @@ router.get("/business/:businessId/products", async (req, res,) => {
     }
 });
 
-router.post("/business/:businessId/products", authenticateToken, async (req, res,) => {
+router.post("/business/:businessId/products", authenticateToken, hasRole(), async (req, res,) => {
     try {
       const products = req.body 
       const newProducts = await ProductService.createProducts(req.user_id, products)
@@ -34,7 +34,7 @@ router.post("/business/:businessId/products", authenticateToken, async (req, res
     }
 });
 
-router.put("/business/:businessId/products", authenticateToken, async (req, res,) => {
+router.put("/business/:businessId/products", authenticateToken, hasRole(), async (req, res,) => {
     try {
       const products = req.body 
       const updatedProducts = await ProductService.updateProducts(req.user_id, products)
@@ -46,7 +46,7 @@ router.put("/business/:businessId/products", authenticateToken, async (req, res,
     }
 });
 
-router.delete("/business/:businessId/products", async (req, res,) => {
+router.delete("/business/:businessId/products", authenticateToken, hasRole(), async (req, res,) => {
     try {
       const products = req.body 
       await ProductService.removeProducts(1, req.params.businessId, products)
@@ -58,7 +58,7 @@ router.delete("/business/:businessId/products", async (req, res,) => {
     }
 });
 
-router.put("/business/:businessId/products/product-image", upload.single("photo"),authenticateToken, async (req: any, res: any) => {
+router.put("/business/:businessId/products/product-image", upload.single("photo"),authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
         const file = req.file
         const updatedBusiness = await StorageService.saveProductUrl(file, req.body['photoType'], req.body['productId'], req.params['businessId'])

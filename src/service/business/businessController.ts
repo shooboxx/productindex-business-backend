@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 import { BusinessService } from './businessService';
 import { Business, CreateBusiness } from './businessType';
-import { authenticateToken } from '../auth/authorization';
+import { authenticateToken , hasRole} from '../auth/authorization';
 import { TagsService } from './tags/businessTagService';
 import { StorageService } from '../storage/storageService'
 import {upload} from '../storage/multerConfig'
@@ -40,7 +40,7 @@ router.post("/business", authenticateToken, async (req: any, res: any) => {
     }
 });
 
-router.post("/business/:businessId/tags", authenticateToken, async (req: any, res: any) => {
+router.post("/business/:businessId/tags", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
         
       const businessTags = await TagsService.addBusinessTags(req.user_id, req.params.businessId, req.body)
@@ -50,7 +50,7 @@ router.post("/business/:businessId/tags", authenticateToken, async (req: any, re
     }
 });
 
-router.delete("/business/:businessId/tags/:tagId", authenticateToken, async (req: any, res: any) => {
+router.delete("/business/:businessId/tags/:tagId", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
         
       const businessTags = await TagsService.deleteBusinessTag(req.user_id, req.params.businessId, req.params.tagId)
@@ -60,7 +60,7 @@ router.delete("/business/:businessId/tags/:tagId", authenticateToken, async (req
     }
 });
 
-router.put("/business/:businessId", authenticateToken, async (req: any, res: any) => {
+router.put("/business/:businessId", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
       const business : Business = {
         id: req.params.businessId,
@@ -76,7 +76,7 @@ router.put("/business/:businessId", authenticateToken, async (req: any, res: any
     }
 });
 
-router.put("/business/:businessId/profile-image",upload.single("photo"), authenticateToken, async (req: any, res: any) => {
+router.put("/business/:businessId/profile-image",upload.single("photo"), authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
       const file = req.file
       const updatedBusiness = await StorageService.saveProfileUrl(file, req.body['photoType'], req.params['businessId'])
@@ -86,7 +86,7 @@ router.put("/business/:businessId/profile-image",upload.single("photo"), authent
     }
 });
 
-router.delete("/business/:businessId", authenticateToken, async (req: any, res: any) => {
+router.delete("/business/:businessId", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
       await BusinessService.deleteBusiness(req.user_id, req.params.businessId);
       return res.status(200).json({success: true});

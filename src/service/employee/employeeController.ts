@@ -2,22 +2,23 @@ import express from "express";
 const router = express.Router();
 import { EmployeeService } from './employeeService';
 import {AccessLevel} from './enums/employeeAccessLevelEnum'
+import { authenticateToken, hasRole } from '../auth/authorization';
 
 
-router.get("/employees", async (req: any, res: any) => { //TODO: Only user with access to this business can hit this
+router.get("/business/:businessId/employees", authenticateToken, hasRole([AccessLevel.Manager]), async (req: any, res: any) => {
     try {
-      const {businessId, firstName, lastName, accessLevel} = req.query
+      const {firstName, lastName, accessLevel} = req.query
       const userInfo = {firstName, lastName, accessLevel}
-      if (!businessId) return res.status(200).json(null);
+      if (!req.params.businessId) return res.status(200).json(null);
 
-      const employees = await EmployeeService.getBusinessEmployees(businessId, userInfo);
+      const employees = await EmployeeService.getBusinessEmployees(req.params.businessId, userInfo);
       return res.status(200).json(employees);
     } catch (e : any) {
         return res.status(e.statusCode).json({error: e.message})
     }
 });
 
-router.get("/employee/verify", async (req: any, res: any) => {
+router.get("/business/:businessId/employee/verify", async (req: any, res: any) => {
   try {
     const {code} = req.query
     if (!code) return res.status(400).json(null);
@@ -29,7 +30,7 @@ router.get("/employee/verify", async (req: any, res: any) => {
   }
 });
 
-router.put("/employees/:employeeId", async (req: any, res: any) => {
+router.put("/business/:businessId/employees/:employeeId", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
       await EmployeeService.updateEmployeeAccessLevel(req.params.employeeId, AccessLevel[req.body.access_level]);
       return res.status(200).json({success : true});
@@ -38,7 +39,7 @@ router.put("/employees/:employeeId", async (req: any, res: any) => {
     }
 });
 
-router.delete("/employees/:employeeId", async (req: any, res: any) => {
+router.delete("/business/:businessId/employees/:employeeId", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
       await EmployeeService.deleteEmployee(req.params.employeeId);
       return res.status(200).json({success : true});
@@ -47,9 +48,9 @@ router.delete("/employees/:employeeId", async (req: any, res: any) => {
     }
 });
 
-router.post("/employees", async (req: any, res: any) => {
+router.post("/business/:businessId/employees", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
-      const employee = await EmployeeService.createEmployee(req.body.business_id, req.body.user_id, AccessLevel[req.body.access_level]);
+      const employee = await EmployeeService.createEmployee(req.params.businessId, req.body.user_id, AccessLevel[req.body.access_level]);
       return res.status(200).json(employee);
     } catch (e : any) {
         return res.status(e.statusCode).json({error: e.message})

@@ -1,8 +1,9 @@
 import express from "express";
 const router = express.Router();
 import { StoreService } from "./storeService";
-import { authenticateToken } from '../auth/authorization';
+import { authenticateToken, hasRole } from '../auth/authorization';
 import { CreateBusinessStore, BusinessStore } from './storeTypes';
+import { AccessLevel } from "../employee/enums/employeeAccessLevelEnum";
 
 router.get("/business/:businessId/stores", async (req, res) => {
     try {
@@ -15,7 +16,7 @@ router.get("/business/:businessId/stores", async (req, res) => {
     }
 })
 
-router.post("/business/:businessId/stores", authenticateToken, async (req: any, res: any) => {
+router.post("/business/:businessId/stores", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
         const store : CreateBusinessStore = {
             business_id: req.params.businessId,
@@ -38,7 +39,7 @@ router.post("/business/:businessId/stores", authenticateToken, async (req: any, 
     }
 });
 
-router.put("/business/:businessId/store/:storeId", authenticateToken, async (req: any, res: any) => {
+router.put("/business/:businessId/store/:storeId", authenticateToken, hasRole([AccessLevel.Manager]), async (req: any, res: any) => {
     try {
         const store : BusinessStore = {
             id: req.params.storeId,
@@ -66,7 +67,7 @@ router.put("/business/:businessId/store/:storeId", authenticateToken, async (req
     }
 });
 
-router.delete("/business/:businessId/store/:storeId", authenticateToken, async (req: any, res: any) => {
+router.delete("/business/:businessId/store/:storeId", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
         await StoreService.deleteStore(req.user_id, req.params.businessId, req.params.storeId)
         return res.status(200).json({success: true})

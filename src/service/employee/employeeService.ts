@@ -57,7 +57,7 @@ const getBusinessEmployees = async (businessId : number, userInfo : EmployeeSear
 //Implemented and tested
 const _doesEmployeeExist = async (businessId : number, userId : number) => {
     try {
-        const employee =  await EmployeeRepo._findEmployeeExist(businessId, userId)
+        const employee =  await EmployeeRepo.findUserEmployeeInfo(businessId, userId)
         if (employee) return true
         return false
     }
@@ -94,11 +94,18 @@ const _findEmployeeById = async (employeeId : number) => {
     if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
     return await EmployeeRepo._findEmployeeById(employeeId)
 }
+
+
+const getUserEmployeeInfo = async (userId: number, businessId: number) => {
+    return await EmployeeRepo.findUserEmployeeInfo(businessId, userId)
+}
+
 export const EmployeeService = { 
     createEmployee,
     updateEmployeeAccessLevel,
     deleteEmployee,
     getBusinessEmployees,
     verifyEmployee,
-    _findEmployeeById
+    _findEmployeeById,
+    getUserEmployeeInfo
 }
