@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       Business.hasMany(models.BusinessTags, { foreignKey: "business_id" });
       Business.hasMany(models.Product, {foreignKey: "business_id"});
       Business.hasMany(models.BusinessPortfolio, {foreignKey: "business_id"});
+      Business.hasMany(models.Employee, {foreignKey: "business_id"});
     }
   }
   Business.init(

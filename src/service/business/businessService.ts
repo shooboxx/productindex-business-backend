@@ -2,13 +2,18 @@ import { Business, CreateBusiness } from "./businessType"
 import { BusinessRepo } from "./businessRepo"
 import AppError from '../../../utils/AppError'
 import { BusinessErrors } from './businessConts';
+import { EmployeeService } from "../employee/employeeService";
+import { AccessLevel } from "../employee/enums/employeeAccessLevelEnum";
 
 const createBusiness = async (business : CreateBusiness) => {
     try {
         _validateBusinessCompleteness(business)
         const isExistingBusiness = _validateBusinessExist(business)
         if (isExistingBusiness) throw new AppError(BusinessErrors.BusinessExist, 400)
-        return await BusinessRepo.addBusiness(business)
+        const newBusiness = await BusinessRepo.addBusiness(business)
+        await EmployeeService.createEmployee(newBusiness.id, business.created_by, AccessLevel.Owner)
+        return newBusiness
+
     }
     catch (e : any) {
         throw new AppError(e.message, e.statusCode)

@@ -46,15 +46,21 @@ const updateBusiness = async (business : Business) : Promise<Business> => {
 }
 
 const findUserBusinesses = async (userId : number) : Promise<Business[]> => {
-    const businesses = await db.Business.findAll({
+    return db.Employee.findAll({
         where: {
-            created_by: userId,
+            user_id: userId,
             deleted_date: null
         },
-        include: [{model: db.BusinessTags, attributes: {exclude: ['insert_date', 'update_date', 'business_id']}}]
-        
+        attributes: {
+            exclude: ['deleted_date']
+        },
+        include: [{
+            model: db.Business, where: {deleted_date: null}, exclude: ['deleted_date, update_date'],
+            include: [{
+                model: db.BusinessTags, attributes: {exclude: ['insert_date', 'update_date', 'business_id']}
+            }]
+        }]
     }).catch(e => {throw new Error(e.message)})
-    return businesses
 }
 
 const deleteBusiness = async (businessId : number) => {

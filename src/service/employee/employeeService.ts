@@ -5,6 +5,7 @@ import {AccessLevel} from './enums/employeeAccessLevelEnum'
 import { EmployeeRepo } from './employeeRepo';
 import { EmployeeSearch, Employee } from './employeeType';
 import {EmployeeErrors} from './employeeConst'
+const crypto = require('crypto')
 
 //Implemented and tested
 const createEmployee = async (businessId : number, userId : number, accessLevel : AccessLevel) => {
@@ -14,7 +15,7 @@ const createEmployee = async (businessId : number, userId : number, accessLevel 
         if (!userId) throw new AppError(UserErrors.UserIdRequired, 400)
         if (!accessLevel || !AccessLevel[accessLevel]) return 
         if (await _doesEmployeeExist(businessId, userId)) throw new AppError(EmployeeErrors.EmployeeExist, 400)
-        if (accessLevel !== AccessLevel.Owner) verificationCode = '' //TODO: Generate code
+        if (accessLevel !== AccessLevel.Owner) verificationCode = crypto.randomBytes(32).toString('hex')
         
         const employee = await EmployeeRepo.createEmployee(businessId, userId, accessLevel, verificationCode)
         if (employee && accessLevel !== AccessLevel.Owner ) console.log('Send email!') //TODO: Send an email to verify access to the business
@@ -67,12 +68,12 @@ const _doesEmployeeExist = async (businessId : number, userId : number) => {
 //Implemented and tested
 const verifyEmployee = async (verificationCode : string) => {
     const employee : Employee = await _getUserByEmployeeVerificationCode(verificationCode)
-    if (employee) {
-        employee.employee_verify_code = ''
-        employee.verified_date = new Date()
-        return await _updateEmployee(employee)        
-    }
-    throw new AppError(EmployeeErrors.InvalidVerificationCode, 400)
+    if (!employee) throw new AppError(EmployeeErrors.InvalidVerificationCode, 400)
+    
+    employee.employee_verify_code = ''
+    employee.verified_date = new Date()
+    return await _updateEmployee(employee)        
+    
 }
 //Implemented and tested
 const _getUserByEmployeeVerificationCode = async (verificiationCode : string) : Promise<Employee>=> {
