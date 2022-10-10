@@ -21,7 +21,7 @@ export function hasRole (role : AccessLevel[] = []) {
         const userId = req.user_id
         EmployeeService.getUserEmployeeInfo(userId, businessId)
             .then(data=> {
-                if (!allowedRoles.includes(data.business_access_level)) throw new AppError('You do not have sufficient permission', 400)
+                if (!allowedRoles.includes(data.business_access_level)) throw new AppError(AuthErrors.InsufficientPermissions, 400)
                 return next()
             }).catch(e => {
                 res.status(e.statusCode).json({error: e.message})
