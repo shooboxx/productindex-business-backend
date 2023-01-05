@@ -20,7 +20,7 @@ const getInventoryItem = (inventoryId) : Promise <InventoryItem> => {
 const getInventoryItems = () => {
     return
 }
-
+//TODO: I have a function to check all user stores
 const createInventoryItems = async (userId, inventoryItems : CreateInventoryItem[]) =>  {
     try {    
         
@@ -47,7 +47,7 @@ const createInventoryItems = async (userId, inventoryItems : CreateInventoryItem
     }
 
 }
-
+//TODO: I have a function to check all user stores
 const updateInventoryItems = async (userId : number, inventoryItems : InventoryItem[]) => {
     try {    
         const validatedInventoryItems : any = [] 
@@ -72,7 +72,7 @@ const updateInventoryItems = async (userId : number, inventoryItems : InventoryI
         throw new AppError(e.message, e.statusCode)
     }
 }
-
+//TODO: I have a function to check all user stores
 const removeInventoryItems = (userId, storeId, inventoryItemsIDs : number[]) => {
     try {
         StoreService.checkUserHasRightsToStore(userId, storeId)
