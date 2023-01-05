@@ -31,7 +31,8 @@ router.post("/business", authenticateToken, async (req: any, res: any) => {
         description: req.body.business_description,
         category: req.body.business_category,
         active: true,
-        created_by: req.user_id
+        created_by: req.user_id,
+        registered_country: req.body.registered_country
       };
       const createdBiz = await BusinessService.createBusiness(biz).catch((e)=> {return res.status(400).json({error: e.message})});
       return res.status(200).json(createdBiz);
@@ -68,8 +69,9 @@ router.put("/business/:businessId", authenticateToken, hasRole(), async (req: an
         description: req.body.description,
         profile_pic_url: req.body.profile_pic_url,
         category: req.body.category,
+        registered_country: req.body.registered_country
       }
-      const updatedBusiness = await BusinessService.updateBusiness(req.user_id, business);
+      const updatedBusiness = await BusinessService.updateBusiness(business);
       return res.status(200).json(updatedBusiness);
     } catch (e : any) {
         return res.status(e.statusCode).json({error: e.message})
@@ -88,7 +90,7 @@ router.put("/business/:businessId/profile-image",upload.single("photo"), authent
 
 router.delete("/business/:businessId", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
-      await BusinessService.deleteBusiness(req.user_id, req.params.businessId);
+      await BusinessService.deleteBusiness(req.params.businessId);
       return res.status(200).json({success: true});
     } catch (e : any) {
         return res.status(e.statusCode).json({error: e.message})

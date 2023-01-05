@@ -86,6 +86,12 @@ const findBusnesssById = async (businessId : number) => {
     return business
 }
 
+const lookupBusiness = async (businessName : string, country : string) => {
+    const comparableBusinessName = businessName.toLowerCase().split(' ').join('')
+    const businesses = await db.sequelize.query(`select * from business where replace(lower(business_name), ' ', '') = '${comparableBusinessName}' and registered_country = '${country}' and deleted_date is null`).catch(e => null)
+    return businesses[0]
+}
+
 
 export const BusinessRepo = {
     addBusiness,
@@ -93,5 +99,6 @@ export const BusinessRepo = {
     deleteBusiness,
     findUserBusinesses,
     findBusnesssById,
-    updateBusinessPicture
+    updateBusinessPicture,
+    lookupBusiness
 }

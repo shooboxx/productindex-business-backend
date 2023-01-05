@@ -26,6 +26,20 @@ const findBusinessStores = async (businessId : number ) : Promise<BusinessStore[
     }).catch(e => {throw new Error(e.message)})
 } 
 
+const findEmployeeBusinessStores = async (employeeId : number) : Promise<BusinessStore[]> => {
+    return await db.BusinessStore.findAll({
+        where: {
+            deleted_date: null
+        },
+        include: [{
+            model: db.EmployeeAssignment, where: {employee_id: employeeId}, exclude: ['update_date'],
+        }],
+        attributes: {
+            exclude: ['insert_date', 'update_date', 'deleted_date']
+        }
+    }).catch(e => {throw new Error(e.message)})
+}
+
 const findStore = async (businessId : number, storeId : number, storeName : string ) : Promise<BusinessStore> => {
     return await db.BusinessStore.findOne({
         where: {
@@ -46,10 +60,11 @@ const addStore = async (store : CreateBusinessStore) => {
         address_line_2: store.address_line_2,
         latitude: store.latitude,
         longitude: store.longitude,
-        country: store.country,
         city: store.city,
         state: store.state,
         postal_code: store.postal_code,
+        public: store.public,
+        private_key: store.private_key
     }).catch(e => {throw new Error(e.message)})
     
     newStore.update_date = undefined
@@ -76,7 +91,6 @@ const updateStore = async (store : BusinessStore) => {
         address_line_2: store.address_line_2,
         latitude: store.latitude,
         longitude: store.longitude,
-        country: store.country,
         city: store.city,
         state: store.state,
         postal_code: store.postal_code,
@@ -101,6 +115,12 @@ const deleteStore = async (storeId : number) => {
     })
 }
 
+const lookUpStore = async (storeUniqueName : string) => {
+    const comparableStoreName = storeUniqueName.toLowerCase().split(' ').join('')
+    const stores = await db.sequelize.query(`select * from business_store bs where replace(lower(unique_name), ' ', '') = '${comparableStoreName}' and deleted_date is null`).catch(e => null)
+    return stores[0]
+}
+
 
 
 export const StoreRepo = {
@@ -110,5 +130,7 @@ export const StoreRepo = {
     addStore,
     updateStore,
     deleteStore,
-    updateStoreUniqueName
+    updateStoreUniqueName,
+    lookUpStore,
+    findEmployeeBusinessStores
 }

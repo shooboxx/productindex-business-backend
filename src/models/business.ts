@@ -9,6 +9,7 @@ export interface BusinessAttributes {
   profile_pic_url?: string;
   active: boolean;
   category?: string;
+  registered_country: string;
   insert_date: Date;
   update_date?: Date;
   deleted_date?: Date;
@@ -26,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     profile_pic_url?: string;
     active!: boolean;
     category?: string;
+    registered_country!: string;
     insert_date!: Date;
     update_date?: Date;
     deleted_date?: Date;
@@ -78,6 +80,10 @@ module.exports = (sequelize, DataTypes) => {
       category: {
         type: DataTypes.STRING(100),
         allowNull: true,
+      },
+      registered_country: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
       },
       insert_date: {
         type: DataTypes.DATE,

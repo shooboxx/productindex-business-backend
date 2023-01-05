@@ -9,7 +9,6 @@ export interface BusinessStoreAttributes {
   address_line_2?: string;
   latitude?: number;
   longitude?: number;
-  country?: string;
   city?: string;
   state?: string;
   postal_code?: string;
@@ -35,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
     address_line_2?: string;
     latitude?: number;
     longitude?: number;
-    country?: string;
     city!: string;
     state!: string;
     postal_code?: string;
@@ -54,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       BusinessStore.hasOne(models.StoreContacts, { foreignKey: "business_store_id"});
       BusinessStore.hasMany(models.InventoryItem, {foreignKey: "business_store_id"}); 
       BusinessStore.hasMany(models.Review, {foreignKey: "store_id"}); 
+      BusinessStore.hasMany(models.EmployeeAssignment, {foreignKey: "business_store_id"}); 
 
     }
   }
@@ -92,10 +91,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       longitude: {
         type: DataTypes.REAL,
-        allowNull: true,
-      },
-      country: {
-        type: DataTypes.STRING(255),
         allowNull: true,
       },
       city: {

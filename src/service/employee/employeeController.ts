@@ -5,7 +5,7 @@ import {AccessLevel} from './enums/employeeAccessLevelEnum'
 import { authenticateToken, hasRole } from '../auth/authorization';
 
 
-router.get("/business/:businessId/employees", authenticateToken, hasRole([AccessLevel.Manager]), async (req: any, res: any) => {
+router.get("/business/:businessId/employees", authenticateToken, async (req: any, res: any) => {
     try {
       const {firstName, lastName, accessLevel} = req.query
       const userInfo = {firstName, lastName, accessLevel}

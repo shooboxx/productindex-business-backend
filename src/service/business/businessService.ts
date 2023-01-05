@@ -7,9 +7,11 @@ import { AccessLevel } from "../employee/enums/employeeAccessLevelEnum";
 
 const createBusiness = async (business : CreateBusiness) => {
     try {
-        _validateBusinessCompleteness(business)
-        const isExistingBusiness = _validateBusinessExist(business)
+        const isExistingBusiness = await _validateBusinessExist(business.name, business.registered_country)
         if (isExistingBusiness) throw new AppError(BusinessErrors.BusinessExist, 400)
+        
+        _validateBusinessCompleteness(business)
+
         const newBusiness = await BusinessRepo.addBusiness(business)
         await EmployeeService.createEmployee(newBusiness.id, business.created_by, AccessLevel.Owner)
         return newBusiness
@@ -21,28 +23,23 @@ const createBusiness = async (business : CreateBusiness) => {
     
 }
 
-const updateBusiness = async (userId : number, business : Business) : Promise<Business> => {
+const updateBusiness = async (business : Business) : Promise<Business> => {
     try {
-        checkUserHasRightsToBusiness(userId, business.id)
+        const isExistingBusiness = await _validateBusinessExist(business.name, business.registered_country)
+        if (!isExistingBusiness) throw new AppError(BusinessErrors.BusinessDoesNotExist)
+        
         const businessToValidate = convertBusinessToCreateBusinessType(business)
 
         _validateBusinessCompleteness(businessToValidate)
-        const isExistingBusiness = _validateBusinessExist(businessToValidate)
-        if (!isExistingBusiness) {
-            throw new AppError(BusinessErrors.BusinessDoesNotExist)
-        }
         return await BusinessRepo.updateBusiness(business)
     }
     catch (e : any) {
         throw new AppError(e.message, e.statusCode)
     }
-    
-    
 }
 
-const deleteBusiness = async (userId : number, businessId : number) => {
+const deleteBusiness = async (businessId : number) => {
     try {
-        checkUserHasRightsToBusiness(userId, businessId)
         return await BusinessRepo.deleteBusiness(businessId)
     }
     catch (e : any) {
@@ -60,12 +57,13 @@ const getUserBusinesses = async (userId : number) : Promise<Business[]> => {
 }
 
 const getBusinessById = async (businessId : number) : Promise<Business> =>  {
-    return await BusinessRepo.findBusnesssById(businessId)
-}
+    try {
+        return await BusinessRepo.findBusnesssById(businessId)
+    }
+    catch (e) {
+        throw new AppError(e.message, e.statusCode)
+    }
 
-
-const checkUserHasRightsToBusiness = (userId : number, businessId : number): Boolean => {
-    return true
 }
 
 const convertBusinessToCreateBusinessType = (business : Business) : CreateBusiness=> {
@@ -76,25 +74,30 @@ const convertBusinessToCreateBusinessType = (business : Business) : CreateBusine
         profile_picture_url: business.profile_pic_url,
         active: business.active,
         created_by: business.created_by || 0,
+        registered_country: business.registered_country
 
     }
 }
 
 // Validations
 const _validateBusinessCompleteness = (business : CreateBusiness) : Boolean=> {
-
+    if (!business.category) throw new AppError(BusinessErrors.BusinessCategoryRequired, 400)
+    if (!business.created_by) throw new AppError(BusinessErrors.BusinessOwnerRequired, 400)
+    if (!business.name) throw new AppError(BusinessErrors.BusinessNameRequired, 400)
+    if (!business.registered_country) throw new AppError(BusinessErrors.BusinessCountryRequired, 400)
     return true
 
 }
-const _validateBusinessExist = (business : CreateBusiness) : Boolean => {
-
-    return false
+const _validateBusinessExist = async (businessName : string, businessCountry : string) : Promise<Boolean> => {
+    if (!businessName) throw new AppError(BusinessErrors.BusinessNameRequired, 400)
+    if (!businessCountry) throw new AppError(BusinessErrors.BusinessCountryRequired, 400)
+    const foundBusiness = await BusinessRepo.lookupBusiness(businessName, businessCountry)
+    return !!foundBusiness.length
 }
 
 export const BusinessService = {
     createBusiness,
     updateBusiness,
-    checkUserHasRightsToBusiness,
     deleteBusiness,
     getUserBusinesses,
     getBusinessById,

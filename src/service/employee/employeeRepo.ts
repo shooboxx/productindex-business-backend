@@ -30,7 +30,7 @@ const findBusinessEmployees = (businessId : number, userInfo : EmployeeSearch) =
 
     return db.Employee.findAll({
         where: employeeWhereClause,
-        attributes: ["business_access_level", "verified_date"],
+        attributes: ["id", "business_access_level", "verified_date"],
         include: [{model: db.Users, where: userWhereClause, attributes:  ["first_name", "last_name"]}]
     })
 }
@@ -49,6 +49,7 @@ const createEmployee = (businessId: number, userId: number, accessLevel : Access
         user_id : userId,
         business_access_level: accessLevel,
         employee_verification_code : verificationCode,
+        verified_date: accessLevel == AccessLevel.Owner &&  new Date()
     })
 }
 

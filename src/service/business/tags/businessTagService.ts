@@ -6,7 +6,6 @@ import { BusinessService } from "../businessService";
 
 const addBusinessTags = async (userId, businessId, tags) => {
     try {    
-        BusinessService.checkUserHasRightsToBusiness(userId, businessId)
         const addedTags : Promise<BusinessTag>[] = []
         const failedTags : any = []
         for (let i = 0; i < tags.length; i++) {
@@ -24,7 +23,6 @@ const addBusinessTags = async (userId, businessId, tags) => {
 
 const deleteBusinessTag = async (userId, businessId, tagId) => {
     try {
-        BusinessService.checkUserHasRightsToBusiness(userId, businessId)
         return await TagsRepo.deleteBusinessTag(businessId, tagId)
     }
     catch (e) {
@@ -49,7 +47,7 @@ const _validateBusinessTags = async (businessId, tag) => {
             return TagErrors.MaxAllowedTags
         }
         for (let i = 0; i < bizTags.length; i++) {
-            if (bizTags[i].tag.toUpperCase().replace(/\s/g, '') == tag.toUpperCase().replace(/\s/g, '')) {
+            if (bizTags[i].tag.toUpperCase().split(' ').join('') == tag.toUpperCase().split(' ').join('')) {
                 return TagErrors.DuplicateTags
             }
         }   

@@ -24,7 +24,6 @@ const createProducts = async (userId, products : CreateProduct[])  => {
         const failedProducts : any = []
         const storedProducts : CreateProduct[] =  []
         if (products.length == 0) throw new AppError(ProductErrors.ProductRequired, 400)
-        BusinessService.checkUserHasRightsToBusiness(userId, products[0].business_id)
 
         products.forEach((product) => {
             const productError = _validateCreateProductCompleteness(product)
@@ -49,7 +48,6 @@ const updateProducts = (userId, products : Product[])  => {
         const failedProducts : any = []
         const updatedProducts : any = []
         if (products.length == 0) throw new AppError(ProductErrors.ProductRequired, 400)
-        BusinessService.checkUserHasRightsToBusiness(userId, products[0].business_id)
 
         products.forEach((product) => {
             const productError = _validateProductCompleteness(product)
@@ -72,7 +70,6 @@ const updateProducts = (userId, products : Product[])  => {
 
 const removeProducts = async (userId, businessId, productIDs : number[]) => {
     try {
-        BusinessService.checkUserHasRightsToBusiness(userId, businessId)
         productIDs.forEach(id => {
             ProductRepo.deleteProduct(id)
         })
