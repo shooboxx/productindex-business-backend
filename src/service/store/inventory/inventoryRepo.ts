@@ -43,10 +43,11 @@ const addInventoryItem = async (inventoryItem : CreateInventoryItem) : Promise<I
 }
 
 
-const deleteInventoryItem = async (inventoryId : number) => {
+const deleteInventoryItem = async (inventoryIds : number[], storeId : number) => {
     return await db.InventoryItem.destroy({
         where: {
-            id: inventoryId
+            id: inventoryIds,
+            business_store_id: storeId
         }
     })
 }

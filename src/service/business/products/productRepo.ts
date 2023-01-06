@@ -20,11 +20,11 @@ const findBusinessProducts = async (businessId : number, page: number, pageSize:
 
 }
 
-const findProducts = async (productId, productKey) : Promise<Product> => {
+const findProducts = async (productId : number, productName : string) : Promise<Product> => {
     return await db.Product.findAll({
         where: {
-            //TODO: Add a like in here for product_key
-                [Op.or]: [{id: productId}, { product_key: productKey}]
+            //TODO: Add a like in here for product_name. Add business_id to avoid searching another business' products
+                [Op.or]: [{id: productId}, { product_name: productName}]
         }, 
         attributes: {
             exclude: ['deleted_date', 'insert_date', 'update_date']
@@ -41,7 +41,7 @@ const createProduct = async (product : CreateProduct) : Promise<Product> => {
         product_name: product.product_name,
         product_type: product.product_type,
         image_url: product.product_image_url,
-        product_key: product.product_key
+        sku: product.sku
     }).catch((e)=> {throw Error(e)})
 }
 
@@ -50,6 +50,7 @@ const updateProduct = async (product : Product) : Promise<Product>=> {
         product_name: product.product_name,
         product_type: product.product_type,
         image_url: product.product_image_url,
+        sku: product.sku,
 
     }, {
         where: {
@@ -61,12 +62,13 @@ const updateProduct = async (product : Product) : Promise<Product>=> {
 
 }
 
-const deleteProduct = async (productId : number) => {
+const deleteProduct = async (productIds : number[], businessId : number) => {
     return await db.Product.update({
         deleted_date: new Date()
     }, {
         where: {
-            id: productId
+            id: productIds,
+            business_id: businessId
         }
     })
 }

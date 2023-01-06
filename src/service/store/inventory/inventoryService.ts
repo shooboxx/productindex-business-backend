@@ -3,9 +3,7 @@ const AppError = require('../../../../utils/AppError')
 import { InventoryErrors } from "./inventoryConts"
 import { StoreErrors } from "../storeConst"
 import { InventoryRepo } from "./inventoryRepo"
-import { StoreService } from '../storeService';
 import { ProductErrors } from "../../business/products/productConst"
-
 
 const getStoreInventoryItems = (storeId : number, page : number, pageSize : number) : Promise<InventoryItem[]> => {
     if (!storeId) throw new AppError(StoreErrors.storeIdIsRequired, 400)
@@ -17,19 +15,13 @@ const getInventoryItem = (inventoryId) : Promise <InventoryItem> => {
     return InventoryRepo.findInventoryItem(inventoryId)
 }
 
-const getInventoryItems = () => {
-    return
-}
-//TODO: I have a function to check all user stores
-const createInventoryItems = async (userId, inventoryItems : CreateInventoryItem[]) =>  {
+const createInventoryItems = async (inventoryItems : CreateInventoryItem[], storeId : number) =>  {
     try {    
-        
         const validatedInventoryItems : any = [] 
         const invalidItems : CreateInventoryItem[]= []
         if (inventoryItems.length == 0 ) throw new AppError(InventoryErrors.InventoryRequired, 400)
-        StoreService.checkUserHasRightsToStore(userId, inventoryItems[0].store_id)
-
         inventoryItems.forEach((item)=> {
+            item.store_id = storeId
             const inventoryError = _validateInventoryItemCompleteness(item)
             if (!inventoryError) { 
                 InventoryRepo.addInventoryItem(item)
@@ -47,15 +39,14 @@ const createInventoryItems = async (userId, inventoryItems : CreateInventoryItem
     }
 
 }
-//TODO: I have a function to check all user stores
-const updateInventoryItems = async (userId : number, inventoryItems : InventoryItem[]) => {
+const updateInventoryItems = async (inventoryItems : InventoryItem[], storeId : number) => {
     try {    
         const validatedInventoryItems : any = [] 
         const invalidItems : CreateInventoryItem[]= []
         if (inventoryItems.length == 0 ) throw new AppError(InventoryErrors.InventoryRequired, 400)
-        StoreService.checkUserHasRightsToStore(userId, inventoryItems[0].store_id)
 
         inventoryItems.forEach((item)=> {
+            item.store_id = storeId
             const inventoryError = _validateInventoryItemCompleteness(item)
             if (!inventoryError) { 
                 InventoryRepo.updateInventoryItem(item)
@@ -72,14 +63,10 @@ const updateInventoryItems = async (userId : number, inventoryItems : InventoryI
         throw new AppError(e.message, e.statusCode)
     }
 }
-//TODO: I have a function to check all user stores
-const removeInventoryItems = (userId, storeId, inventoryItemsIDs : number[]) => {
+//TODO: Test to see if this still works
+const removeInventoryItems = async (inventoryItemsIDs : number[], storeId : number) => {
     try {
-        StoreService.checkUserHasRightsToStore(userId, storeId)
-        inventoryItemsIDs.forEach(id => {
-            InventoryRepo.deleteInventoryItem(id)
-        })
-        return
+        return await InventoryRepo.deleteInventoryItem(inventoryItemsIDs, storeId)
     }
     catch (e) {
         throw new AppError(e.message, e.statusCode)
@@ -89,14 +76,13 @@ const _validateInventoryItemCompleteness = (inventoryItem : CreateInventoryItem)
     if (!inventoryItem.store_id) return StoreErrors.storeIdIsRequired
     if (!inventoryItem.product_id) return ProductErrors.ProductIdRequired
     if (!inventoryItem.currently_available) return InventoryErrors.ItemAvailabilityNeeded
-    //TODO: check if product exist
+    //TODO: check if product exist and belongs to business
     return ''
 }
 
 export const InventoryService = {
     getStoreInventoryItems,
     getInventoryItem,
-    getInventoryItems,
     createInventoryItems,
     removeInventoryItems,
     updateInventoryItems,

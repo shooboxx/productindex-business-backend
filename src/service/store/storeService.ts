@@ -118,5 +118,5 @@ export const StoreService = {
     updateStore,
     deleteStore,
     checkUserHasRightsToStore,
-    getUserBusinessStores
+    getUserBusinessStores,
 }

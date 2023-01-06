@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       sku: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
       },
       category: {
         type: DataTypes.STRING(255),

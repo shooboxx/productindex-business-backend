@@ -2,7 +2,6 @@
 import { Product, CreateProduct } from "./productType"
 import AppError from './../../../../utils/AppError.js'
 import { ProductErrors } from "./productConst"
-import { BusinessService } from "../businessService"
 import { ProductRepo } from './productRepo';
 import { BusinessErrors } from "../businessConts";
 
@@ -19,13 +18,14 @@ const getProducts = async (productId : number, productKey : string) : Promise<Pr
     return await ProductRepo.findProducts(productId, productKey)
 } 
 
-const createProducts = async (userId, products : CreateProduct[])  => {
+const createProducts = async (products : CreateProduct[], businessId : number)  => {
     try {
         const failedProducts : any = []
         const storedProducts : CreateProduct[] =  []
         if (products.length == 0) throw new AppError(ProductErrors.ProductRequired, 400)
 
         products.forEach((product) => {
+            product.business_id = businessId
             const productError = _validateCreateProductCompleteness(product)
             if (!productError) {
                 ProductRepo.createProduct(product)
@@ -43,13 +43,14 @@ const createProducts = async (userId, products : CreateProduct[])  => {
     }
 }
 
-const updateProducts = (userId, products : Product[])  => {
+const updateProducts = (products : Product[], businessId : number)  => {
     try {
         const failedProducts : any = []
         const updatedProducts : any = []
         if (products.length == 0) throw new AppError(ProductErrors.ProductRequired, 400)
 
         products.forEach((product) => {
+            product.business_id = businessId
             const productError = _validateProductCompleteness(product)
             if (!productError) {
                 ProductRepo.updateProduct(product)
@@ -67,13 +68,10 @@ const updateProducts = (userId, products : Product[])  => {
         throw new AppError(e.message, e.statusCode)
     }
 }
-
-const removeProducts = async (userId, businessId, productIDs : number[]) => {
+//TODO: Retest this delete method still works
+const removeProducts = async (productIDs : number[], businessId : number) => {
     try {
-        productIDs.forEach(id => {
-            ProductRepo.deleteProduct(id)
-        })
-        return
+        return await ProductRepo.deleteProduct(productIDs, businessId)
     }
     catch (e) {
         throw new AppError(e.message, e.statusCode)
@@ -84,7 +82,6 @@ const _validateCreateProductCompleteness = (product : CreateProduct) : string =>
     if (!product.business_id) return BusinessErrors.BusinessIdRequired
     if (!product.product_name) return ProductErrors.ProductNameRequired
     if (!product.product_type) return ProductErrors.ProductTypeRequired
-    if (product.product_key == "") return ProductErrors.ProductKeyRequired
     return ''
 }
 
@@ -93,7 +90,6 @@ const _validateProductCompleteness = (product : Product) : string => {
     if (!product.business_id) return BusinessErrors.BusinessIdRequired
     if (!product.product_name) return ProductErrors.ProductNameRequired
     if (!product.product_type) return ProductErrors.ProductTypeRequired
-    if (product.product_key == "") return ProductErrors.ProductKeyRequired
     return ''
 }
 

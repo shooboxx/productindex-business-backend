@@ -5,7 +5,7 @@ export interface Product {
     product_type: string,
     product_image_url?: string,
     product_description?: string,
-    product_key: string,
+    sku?: string,
     tag: string,
     insert_date?: number,
     update_date?: number
@@ -17,6 +17,6 @@ export interface CreateProduct {
     product_type: string,
     product_image_url?: string,
     product_description?: string,
-    product_key: string,
+    sku?: string,
     tag: string,
 }

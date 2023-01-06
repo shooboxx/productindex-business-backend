@@ -24,7 +24,7 @@ router.get("/business/:businessId/products", async (req, res,) => {
 router.post("/business/:businessId/products", authenticateToken, hasRole(), async (req, res,) => {
     try {
       const products = req.body 
-      const newProducts = await ProductService.createProducts(req.user_id, products)
+      const newProducts = await ProductService.createProducts(products, req.params.businessId)
       
       return res.status(200).json(newProducts)
       
@@ -37,7 +37,7 @@ router.post("/business/:businessId/products", authenticateToken, hasRole(), asyn
 router.put("/business/:businessId/products", authenticateToken, hasRole(), async (req, res,) => {
     try {
       const products = req.body 
-      const updatedProducts = await ProductService.updateProducts(req.user_id, products)
+      const updatedProducts = await ProductService.updateProducts(products, req.params.businessId)
       return res.status(200).json(updatedProducts)
       
     }
@@ -49,7 +49,7 @@ router.put("/business/:businessId/products", authenticateToken, hasRole(), async
 router.delete("/business/:businessId/products", authenticateToken, hasRole(), async (req, res,) => {
     try {
       const products = req.body 
-      await ProductService.removeProducts(1, req.params.businessId, products)
+      await ProductService.removeProducts(products, req.params.businessId)
       return res.status(200).json({success: true})
       
     }

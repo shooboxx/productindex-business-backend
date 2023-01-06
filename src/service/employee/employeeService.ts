@@ -13,7 +13,7 @@ const createEmployee = async (businessId : number, userId : number, accessLevel 
         let verificationCode = ''
         if (!businessId) throw new AppError(BusinessErrors.BusinessIdRequired, 400)
         if (!userId) throw new AppError(UserErrors.UserIdRequired, 400)
-        if (!accessLevel || !AccessLevel[accessLevel]) return 
+        if (!accessLevel || !AccessLevel[accessLevel]) return //TODO: Should be an error, right?
         if (await _doesEmployeeExist(businessId, userId)) throw new AppError(EmployeeErrors.EmployeeExist, 400)
         if (accessLevel !== AccessLevel.Owner) verificationCode = crypto.randomBytes(32).toString('hex')
         
@@ -28,9 +28,15 @@ const createEmployee = async (businessId : number, userId : number, accessLevel 
 }
 //Implemented and tested
 const updateEmployeeAccessLevel = async (employeeId : number, accessLevel : AccessLevel) => {
-    if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
-    if (!accessLevel) throw new AppError(EmployeeErrors.AccessLevelRequired, 400)
-    return EmployeeRepo.updateEmployeeAccessLevel(employeeId, accessLevel)
+    try {
+        if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
+        if (!accessLevel) throw new AppError(EmployeeErrors.AccessLevelRequired, 400)
+        return EmployeeRepo.updateEmployeeAccessLevel(employeeId, accessLevel)
+    }
+    catch (e) {
+        throw new AppError(e.message, e.status)
+    }
+
 }
 //Implemented and tested
 const deleteEmployee = async (employeeId : number) => {
@@ -67,12 +73,17 @@ const _doesEmployeeExist = async (businessId : number, userId : number) => {
 }
 //Implemented and tested
 const verifyEmployee = async (verificationCode : string) => {
-    const employee : Employee = await _getUserByEmployeeVerificationCode(verificationCode)
-    if (!employee) throw new AppError(EmployeeErrors.InvalidVerificationCode, 400)
-    
-    employee.employee_verify_code = ''
-    employee.verified_date = new Date()
-    return await _updateEmployee(employee)        
+    try {
+        const employee : Employee = await _getUserByEmployeeVerificationCode(verificationCode)
+        if (!employee) throw new AppError(EmployeeErrors.InvalidVerificationCode, 400)
+        
+        employee.employee_verify_code = ''
+        employee.verified_date = new Date()
+        return await _updateEmployee(employee)     
+    }
+    catch (e) {
+        throw new AppError(e.message, e.status)
+    }   
     
 }
 //Implemented and tested
@@ -87,17 +98,33 @@ const _getUserByEmployeeVerificationCode = async (verificiationCode : string) : 
 }
 //Implemented and tested
 const _updateEmployee = async (employee : Employee) => {
-    return await EmployeeRepo._updateEmployee(employee)
+    try {
+        return await EmployeeRepo._updateEmployee(employee)
+    }
+    catch (e) {
+        throw new AppError(e.message, e.status)
+    }
 }
 
 const _findEmployeeById = async (employeeId : number) => {
-    if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
-    return await EmployeeRepo._findEmployeeById(employeeId)
+    try { 
+        if (!employeeId) throw new AppError(EmployeeErrors.EmployeeIdRequired, 400)
+        return await EmployeeRepo._findEmployeeById(employeeId)
+    }
+    catch (e) {
+        throw new AppError(e.message, e.status)
+    }
 }
 
 
 const getUserEmployeeInfo = async (userId: number, businessId: number) => {
-    return await EmployeeRepo.findUserEmployeeInfo(businessId, userId)
+    try {
+        return await EmployeeRepo.findUserEmployeeInfo(businessId, userId)
+    }
+    catch (e) {
+        throw new AppError(e.message, e.status)
+    }
+    
 }
 
 export const EmployeeService = { 
