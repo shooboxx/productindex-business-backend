@@ -4,6 +4,7 @@ import { InventoryErrors } from "./inventoryConts"
 import { StoreErrors } from "../storeConst"
 import { InventoryRepo } from "./inventoryRepo"
 import { ProductErrors } from "../../business/products/productConst"
+import { ProductService } from '../../business/products/productService';
 
 const getStoreInventoryItems = (storeId : number, page : number, pageSize : number) : Promise<InventoryItem[]> => {
     if (!storeId) throw new AppError(StoreErrors.storeIdIsRequired, 400)
@@ -14,16 +15,18 @@ const getInventoryItem = (inventoryId) : Promise <InventoryItem> => {
     if (!inventoryId) throw new AppError(InventoryErrors.InventoryIdRequired, 400)
     return InventoryRepo.findInventoryItem(inventoryId)
 }
-
+//TODO: Retest to see if this still works
 const createInventoryItems = async (inventoryItems : CreateInventoryItem[], storeId : number) =>  {
     try {    
+
         const validatedInventoryItems : any = [] 
         const invalidItems : CreateInventoryItem[]= []
         if (inventoryItems.length == 0 ) throw new AppError(InventoryErrors.InventoryRequired, 400)
-        inventoryItems.forEach((item)=> {
+        inventoryItems.forEach(async (item)=> {
             item.store_id = storeId
             const inventoryError = _validateInventoryItemCompleteness(item)
-            if (!inventoryError) { 
+            const productExist = await ProductService._checkProductExist(item.product_id)
+            if (!inventoryError && productExist) { 
                 InventoryRepo.addInventoryItem(item)
                 validatedInventoryItems.push(item)
             } 
@@ -76,7 +79,6 @@ const _validateInventoryItemCompleteness = (inventoryItem : CreateInventoryItem)
     if (!inventoryItem.store_id) return StoreErrors.storeIdIsRequired
     if (!inventoryItem.product_id) return ProductErrors.ProductIdRequired
     if (!inventoryItem.currently_available) return InventoryErrors.ItemAvailabilityNeeded
-    //TODO: check if product exist and belongs to business
     return ''
 }
 

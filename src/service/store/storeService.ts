@@ -30,7 +30,7 @@ const _getStoreById = async (storeId : number) : Promise<BusinessStore> => {
     return await StoreRepo._findStoreById(storeId)
 }
 
-const createStore = async (userId : number, store : CreateBusinessStore) : Promise<BusinessStore> => {
+const createStore = async (store : CreateBusinessStore) : Promise<BusinessStore> => {
     try {   
         _validateStoreCompleteness(store)
         if (!store.unique_name) throw new AppError(StoreErrors.uniqueNameIsRequired, 400)
@@ -51,7 +51,7 @@ const createStore = async (userId : number, store : CreateBusinessStore) : Promi
 }
 
 const updateStore = async (store : BusinessStore) => {
-    try{    
+    try {    
         _validateStoreCompleteness(store)
         if (!await _checkIfStoreExist(store.unique_name)) throw new AppError(StoreErrors.storeNotFound, 404)
         await StoreContactService.manageStoreContact(store.id, store.StoreContact)
@@ -71,29 +71,16 @@ const deleteStore = (storeId : number) => {
     }
 } 
 
-//TODO: Implement to check if a store with this name exists already. Start implementing repo
-const updateStoreUniqueName = async (businessId, storeId, storeUniqueName) => {
+const updateStoreUniqueName = async (storeId : number, storeUniqueName : string) => {
     try {    
-        const storeUniqueNameCheck = storeUniqueName.split(' ').join('').toUpperCase()
-        const store = getStore(businessId, 0, storeUniqueNameCheck)
-        if (!store) {
-            throw new AppError(StoreErrors.storeNotFound, 404)
-        }
-        if (storeId != store['id']) {
-            throw new AppError(StoreErrors.storeWithUniqueNameCurrentlyExist, 400)
-        }
-
-        return StoreRepo.updateStoreUniqueName(store['id'], storeUniqueName.storeUniqueName.split(' ').join(''))
+        const storeExist = await _checkIfStoreExist(storeUniqueName)
+        if (storeExist) throw new AppError(StoreErrors.storeExists, 400)
+        return StoreRepo.updateStoreUniqueName(storeId, storeUniqueName.split(' ').join(''))
     }
     catch (e) {
         throw new AppError(e.message, e.statusCode)
     }
     
-}
-
-// TODO: Implement check to see if user has rights to manage store
-const checkUserHasRightsToStore = (userId : number, storeId : number) => {
-
 }
 
 const _validateStoreCompleteness = (store : CreateBusinessStore) : Boolean => {
@@ -117,6 +104,5 @@ export const StoreService = {
     createStore,
     updateStore,
     deleteStore,
-    checkUserHasRightsToStore,
     getUserBusinessStores,
 }

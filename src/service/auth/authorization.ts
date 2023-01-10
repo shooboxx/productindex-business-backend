@@ -28,3 +28,8 @@ export function hasRole (role : AccessLevel[] = []) {
             })
     }
 }
+
+// TODO: Implement check to see if user has rights to manage store
+const checkUserHasRightsToStore = (userId : number, storeId : number) => {
+
+}

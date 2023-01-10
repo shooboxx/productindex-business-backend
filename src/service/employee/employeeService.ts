@@ -13,7 +13,7 @@ const createEmployee = async (businessId : number, userId : number, accessLevel 
         let verificationCode = ''
         if (!businessId) throw new AppError(BusinessErrors.BusinessIdRequired, 400)
         if (!userId) throw new AppError(UserErrors.UserIdRequired, 400)
-        if (!accessLevel || !AccessLevel[accessLevel]) return //TODO: Should be an error, right?
+        if (!accessLevel || !AccessLevel[accessLevel]) throw new AppError(EmployeeErrors.AccessLevelRequired, 400)
         if (await _doesEmployeeExist(businessId, userId)) throw new AppError(EmployeeErrors.EmployeeExist, 400)
         if (accessLevel !== AccessLevel.Owner) verificationCode = crypto.randomBytes(32).toString('hex')
         

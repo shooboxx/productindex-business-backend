@@ -1,11 +1,11 @@
 import db from '../../../models'
 import { Product, CreateProduct } from './productType';
-const { Op } = require("sequelize");
 
 const findBusinessProducts = async (businessId : number, page: number, pageSize: number) : Promise<Product[]> => {
     let clause = {
         where: {
-            business_id: businessId
+            business_id: businessId,
+            deleted_date: null
         }, 
         attributes: {
             exclude: ['deleted_date', 'insert_date', 'update_date']
@@ -19,12 +19,12 @@ const findBusinessProducts = async (businessId : number, page: number, pageSize:
     return await db.Product.findAndCountAll(clause).catch(e => {throw new Error(e.message)})
 
 }
-
-const findProducts = async (productId : number, productName : string) : Promise<Product> => {
-    return await db.Product.findAll({
+const findProductById = async (productId : number, businessId : number) : Promise<Product> => {
+    return await db.Product.findOne({
         where: {
-            //TODO: Add a like in here for product_name. Add business_id to avoid searching another business' products
-                [Op.or]: [{id: productId}, { product_name: productName}]
+                id: productId,
+                business_id: businessId,
+                deleted_date: null
         }, 
         attributes: {
             exclude: ['deleted_date', 'insert_date', 'update_date']
@@ -32,8 +32,12 @@ const findProducts = async (productId : number, productName : string) : Promise<
     }).catch(e => {throw new Error(e.message)})
 
 }
+const findProductsByName = async (productName : string, businessId : number) : Promise<Product[]> => {
+    const comparableProductName = productName.toLowerCase().split(' ').join('')
+    const products = await db.sequelize.query(`select id, business_id, product_name, product_type, image_url, description, tag, sku, category from product p where replace(lower(product_name), ' ', '') like '%${comparableProductName}%' and business_id = ${businessId} and deleted_date is null`).catch(e => null)
+    return products[0]
 
-//TODO: Find products by name and business id to disallow duplicates
+}
 
 const createProduct = async (product : CreateProduct) : Promise<Product> => {
     return await db.Product.create({
@@ -55,7 +59,8 @@ const updateProduct = async (product : Product) : Promise<Product>=> {
     }, {
         where: {
             id: product.id,
-            business_id: product.business_id
+            business_id: product.business_id,
+            deleted_date: null
         }
     }).catch(e => {throw new Error(e.message)})
     return product
@@ -80,15 +85,30 @@ const updateProductPicture = async (productId: number, pictureUrl: string)  => {
     }, {
         where: {
             id: productId,
+            deleted_date: null
+        }
+    }).catch(e => {throw new Error(e.message)})
+}
+
+const _findProductDetails = async (productId : number) => {
+    return await db.Product.findOne({
+        where: {
+                id: productId,
+                deleted_date: null
+        }, 
+        attributes: {
+            exclude: ['deleted_date', 'insert_date', 'update_date']
         }
     }).catch(e => {throw new Error(e.message)})
 }
 
 export const ProductRepo = {
-    findProducts,
+    findProductById,
     findBusinessProducts,
     createProduct,
     updateProduct,
     deleteProduct,
-    updateProductPicture
+    updateProductPicture,
+    findProductsByName,
+    _findProductDetails
 }

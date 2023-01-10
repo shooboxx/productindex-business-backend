@@ -10,12 +10,17 @@ const getBusinessProducts = async (businessId : number, page : number, pageSize 
         return await ProductRepo.findBusinessProducts(businessId, page, pageSize)
     }
     catch (e) {
-        throw AppError(e.message, e.statusCode)
+        throw new AppError(e.message, e.statusCode)
     }
 }
+const getProductById = async (productId : number, businessId : number) : Promise<Product> => {
+    return await ProductRepo.findProductById(productId, businessId)
+} 
 
-const getProducts = async (productId : number, productKey : string) : Promise<Product> => {
-    return await ProductRepo.findProducts(productId, productKey)
+const getProductsByName = async (productName : string, businessId : number) : Promise<Product[]> => {
+    const emptyProducts : Product[] = [] 
+    if (productName.replace(' ', '').length < 3) return emptyProducts //to ensure that there isn't an infinite amount of results
+    return await ProductRepo.findProductsByName(productName, businessId)
 } 
 
 const createProducts = async (products : CreateProduct[], businessId : number)  => {
@@ -92,13 +97,24 @@ const _validateProductCompleteness = (product : Product) : string => {
     if (!product.product_type) return ProductErrors.ProductTypeRequired
     return ''
 }
+const _checkProductExist = async (productId : number) => {
+    try {
+        const product = await ProductRepo._findProductDetails(productId)
+        return !!product
+    }
+    catch (e) {
+        throw new AppError(e.message, e.statusCode)
+    }
+}
 
 
 export const ProductService = {
-    getProducts,
+    getProductById,
     getBusinessProducts,
     createProducts,
     updateProducts,
-    removeProducts
+    removeProducts,
+    getProductsByName,
+    _checkProductExist
     
 }

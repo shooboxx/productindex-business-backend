@@ -5,17 +5,14 @@ import { authenticateToken, hasRole } from '../auth/authorization';
 import { CreateBusinessStore, BusinessStore } from './storeTypes';
 import { AccessLevel } from "../employee/enums/employeeAccessLevelEnum";
 
-router.get("/business/:businessId/stores", async (req, res) => {
+
+router.get("/business/:businessId/stores", authenticateToken, async (req, res) => {
     try {
-        const {storeId, storeName} = req.query
-        if (storeId) return res.status(200).json(await StoreService.getStore(req.params.businessId, storeId, ''))
-        if (storeName) return res.status(200).json(await StoreService.getStore(req.params.businessId, 0, storeName))
-        return res.status(200).json(await StoreService.getBusinessStores(req.params.businessId))
+        return res.status(200).json(await StoreService.getUserBusinessStores(req.user_id, req.params.businessId))
     } catch (e) {
         res.status(e.statusCode || 400).json({error: e.message})
     }
 })
-//TODO: Create a route to return all business stores attached to a user
 
 router.post("/business/:businessId/stores", authenticateToken, hasRole(), async (req: any, res: any) => {
     try {
@@ -33,7 +30,7 @@ router.post("/business/:businessId/stores", authenticateToken, hasRole(), async 
             StoreContact: req.body.contact
 
         }
-        const newStore = await StoreService.createStore(req.user_id, store);
+        const newStore = await StoreService.createStore(store);
         return res.status(200).json(newStore);
     } catch (e : any) {
         return res.status(e.statusCode).json({error: e.message})
